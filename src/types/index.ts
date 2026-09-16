@@ -41,7 +41,11 @@ export interface Language {
 // Kiosk screen / navigation
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type KioskScreen = 'splash' | 'language' | 'home' | 'chat' | 'scan';
+export type KioskScreen = 'splash' | 'language' | 'home' | 'type' | 'scan' | 'help' | 'chat';
+
+export type SpeakButtonState = 'idle' | 'listening' | 'processing' | 'error';
+
+export type ScanViewState = 'idle' | 'camera_active' | 'captured' | 'processing' | 'error';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Session

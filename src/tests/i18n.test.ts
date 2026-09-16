@@ -42,6 +42,19 @@ const REQUIRED_KEYS: Array<keyof typeof KIOSK_TRANSLATIONS['en']> = [
   'typeQuestion',
   'scanDocument',
   'sessionReset',
+  'actionBack',
+  'actionAsk',
+  'stateListening',
+  'stateProcessing',
+  'stateErrorTryAgain',
+  'scanInstruction',
+  'actionOpenCamera',
+  'actionUploadDocument',
+  'actionCapture',
+  'needHelpTitle',
+  'needHelpDesc',
+  'startOverConfirmTitle',
+  'startOverConfirmDesc',
 ];
 
 describe('i18n — Language List', () => {

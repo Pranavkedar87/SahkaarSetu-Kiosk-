@@ -1,27 +1,25 @@
 /**
  * HomeScreen
  *
- * The primary kiosk home. Clean, minimal, ATM-inspired.
+ * Polished K3 main kiosk dashboard.
  *
- * Layout:
- *   - Persistent KioskHeader (logo + change-language + start-over)
- *   - Central "How can we help you?" message
- *   - Dominant 🎤 SPEAK button (primary action)
- *   - Secondary: ⌨️ TYPE and 📷 SCAN DOCUMENT
- *   - Tertiary: 🏛️ GET HELP FROM PACS
- *   - Optional: ServiceUnavailableBanner when backend is unreachable
- *
- * No: sidebar · profile · settings · admin · login · dashboard
+ * Visual hierarchy:
+ *   1. "How can we help you?" greeting
+ *   2. Visually dominant PrimarySpeakButton (180-220px)
+ *   3. Secondary Action Buttons: Type (⌨️) & Scan Document (📷)
+ *   4. Tertiary Action Button: Get Help from PACS (🏛️)
  */
 
-import { KioskHeader } from '../components/kiosk/KioskHeader';
+import { KioskShell } from '../components/kiosk/KioskShell';
+import { PrimarySpeakButton } from '../components/kiosk/PrimarySpeakButton';
 import { ActionButton } from '../components/kiosk/ActionButton';
-import { ServiceUnavailableBanner } from '../components/kiosk/ServiceUnavailableBanner';
 import type { KioskStrings } from '../i18n';
+import type { SpeakButtonState } from '../types';
 
 interface Props {
   strings: KioskStrings;
   serviceAvailable: boolean;
+  speakState?: SpeakButtonState;
   onSpeak: () => void;
   onType: () => void;
   onScan: () => void;
@@ -33,6 +31,7 @@ interface Props {
 export function HomeScreen({
   strings,
   serviceAvailable,
+  speakState = 'idle',
   onSpeak,
   onType,
   onScan,
@@ -41,74 +40,55 @@ export function HomeScreen({
   onStartOver,
 }: Props) {
   return (
-    <div
-      style={{
-        width: '100vw',
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: '#f8fafc',
-        overflow: 'hidden',
-        boxSizing: 'border-box',
-      }}
+    <KioskShell
+      strings={strings}
+      serviceAvailable={serviceAvailable}
+      onChangeLanguage={onChangeLanguage}
+      onStartOver={onStartOver}
     >
-      {/* Header */}
-      <KioskHeader
-        strings={strings}
-        onChangeLanguage={onChangeLanguage}
-        onStartOver={onStartOver}
-      />
-
-      {/* Main content */}
-      <main
+      <div
         style={{
-          flex: 1,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '24px 32px',
-          gap: '28px',
-          overflowY: 'auto',
-          overflowX: 'hidden',
+          gap: '24px',
+          width: '100%',
+          maxWidth: '720px',
+          margin: '0 auto',
         }}
       >
-        {/* Service unavailable banner */}
-        {!serviceAvailable && (
-          <div style={{ width: '100%', maxWidth: '600px' }}>
-            <ServiceUnavailableBanner strings={strings} />
-          </div>
-        )}
-
-        {/* Greeting */}
+        {/* Main Greeting */}
         <h2
           style={{
-            fontSize: '32px',
-            fontWeight: 700,
+            fontSize: '34px',
+            fontWeight: 800,
             color: '#1e3a5f',
             margin: 0,
             textAlign: 'center',
+            letterSpacing: '-0.5px',
           }}
         >
           {strings.howCanWeHelp}
         </h2>
 
-        {/* PRIMARY: Speak button */}
-        <ActionButton
-          label={strings.actionSpeak}
-          icon="🎤"
-          variant="primary"
-          onClick={onSpeak}
-          ariaLabel={strings.pressToSpeak}
-        />
+        {/* 1. Visually Dominant Primary Speak Action */}
+        <div style={{ padding: '8px 0' }}>
+          <PrimarySpeakButton
+            state={speakState}
+            strings={strings}
+            onClick={onSpeak}
+          />
+        </div>
 
-        {/* SECONDARY: Type + Scan side by side */}
+        {/* 2. Secondary Actions Grid: Type & Scan */}
         <div
           style={{
-            display: 'flex',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
             gap: '16px',
             width: '100%',
-            maxWidth: '500px',
+            maxWidth: '480px',
           }}
         >
           <ActionButton
@@ -125,8 +105,8 @@ export function HomeScreen({
           />
         </div>
 
-        {/* TERTIARY: PACS Help */}
-        <div style={{ width: '100%', maxWidth: '500px' }}>
+        {/* 3. Tertiary Action: Help from PACS */}
+        <div style={{ width: '100%', maxWidth: '480px' }}>
           <ActionButton
             label={strings.actionHelpPacs}
             icon="🏛️"
@@ -134,7 +114,7 @@ export function HomeScreen({
             onClick={onPacsHelp}
           />
         </div>
-      </main>
-    </div>
+      </div>
+    </KioskShell>
   );
 }
