@@ -1,0 +1,94 @@
+/* ─── SahkaarSetu Kiosk — Global Styles ──────────────────────────────────────
+ *
+ * Design tokens:
+ *   --kiosk-green:    #15803d  (SahkaarSetu green, primary actions)
+ *   --kiosk-green-dk: #166534  (Darker green, borders, shadows)
+ *   --kiosk-navy:     #1e3a5f  (Text, headings)
+ *   --kiosk-slate:    #475569  (Secondary text)
+ *   --kiosk-bg:       #f8fafc  (Page background)
+ *   --kiosk-white:    #ffffff
+ *
+ * Touch rules:
+ *   - Minimum interactive element: 48px × 48px
+ *   - No hover-only styles
+ *   - No horizontal overflow
+ *   - No text selection on UI chrome
+ */
+
+:root {
+  --kiosk-green:    #15803d;
+  --kiosk-green-dk: #166534;
+  --kiosk-navy:     #1e3a5f;
+  --kiosk-slate:    #475569;
+  --kiosk-bg:       #f8fafc;
+  --kiosk-white:    #ffffff;
+  --kiosk-radius:   12px;
+  --kiosk-font:     system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Noto Sans Devanagari',
+                    'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Kannada',
+                    'Noto Sans Malayalam', 'Noto Sans Bengali', 'Noto Sans Gujarati',
+                    'Noto Sans Gurmukhi', 'Noto Sans Odia', sans-serif;
+}
+
+/* Box model */
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Base */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--kiosk-font);
+  background-color: var(--kiosk-bg);
+  color: var(--kiosk-navy);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Remove default button styles */
+button {
+  font-family: var(--kiosk-font);
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Focus ring — accessible, not hover-only */
+:focus-visible {
+  outline: 3px solid var(--kiosk-green);
+  outline-offset: 3px;
+}
+
+/* Remove focus ring for mouse users only */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Prevent horizontal overflow everywhere */
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Prevent accidental text selection on interactive chrome */
+h1, h2, h3, button, label {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Scrollbar styling (for language grid) */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
