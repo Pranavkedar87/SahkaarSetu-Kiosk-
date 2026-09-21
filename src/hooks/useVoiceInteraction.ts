@@ -140,6 +140,7 @@ export function useVoiceInteraction({
           !navigator.onLine ||
           sttErr.name === 'AbortError' ||
           sttErr.message?.includes('Failed to fetch') ||
+          sttErr.message?.includes('Load failed') ||
           sttErr.message?.includes('NetworkError') ||
           sttErr.message?.includes('offline')
         ) {
@@ -186,6 +187,7 @@ export function useVoiceInteraction({
           !navigator.onLine ||
           queryErr.name === 'AbortError' ||
           queryErr.message?.includes('Failed to fetch') ||
+          queryErr.message?.includes('Load failed') ||
           queryErr.message?.includes('NetworkError')
         ) {
           setFailureLayer('NETWORK_UNAVAILABLE');

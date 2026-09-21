@@ -151,6 +151,13 @@ export function useVoiceRecorder({
       try {
         isStoppingRef.current = true;
         setStatus('processing');
+        if (typeof mediaRecorderRef.current.requestData === 'function') {
+          try {
+            mediaRecorderRef.current.requestData();
+          } catch {
+            // Ignore
+          }
+        }
         mediaRecorderRef.current.stop();
       } catch (err) {
         console.warn('[VoiceRecorder] Error calling MediaRecorder.stop:', err);

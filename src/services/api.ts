@@ -22,9 +22,35 @@ import type {
 
 const DEFAULT_PROD_URL = 'https://sih26088-cooperative-ai.onrender.com';
 
-/** Base URL resolved from Vite environment variable at build time, with live backend fallback. */
-const API_BASE_URL: string =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) || DEFAULT_PROD_URL;
+function resolveApiBaseUrl(): string {
+  const envUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
+
+  // If in browser on an HTTPS origin (like GitHub Pages or production web),
+  // never use insecure http://localhost as browsers strictly block mixed content.
+  if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
+    if (!envUrl || envUrl.startsWith('http://localhost') || envUrl.startsWith('http://127.0.0.1') || envUrl.startsWith('http:')) {
+      return DEFAULT_PROD_URL;
+    }
+  }
+
+  // If in browser on a remote hostname (e.g. *.github.io, custom domain),
+  // do not point to localhost.
+  if (
+    typeof window !== 'undefined' &&
+    window.location.hostname &&
+    window.location.hostname !== 'localhost' &&
+    window.location.hostname !== '127.0.0.1'
+  ) {
+    if (!envUrl || envUrl.includes('localhost') || envUrl.includes('127.0.0.1')) {
+      return DEFAULT_PROD_URL;
+    }
+  }
+
+  return envUrl || DEFAULT_PROD_URL;
+}
+
+/** Base URL resolved from Vite environment variable at build time, with secure live backend fallback. */
+const API_BASE_URL: string = resolveApiBaseUrl();
 
 export { API_BASE_URL };
 
