@@ -501,16 +501,16 @@ describe('K8: Raspberry Pi Kiosk Hardware Integration', () => {
   // 9. Full End-to-End Multi-Modal Kiosk Demo Flow
   // ───────────────────────────────────────────────────────────────────────────
   describe('Full End-to-End Kiosk Interaction Flow', () => {
-    it('navigates through language -> home -> help -> PACS print slip -> Start Over', () => {
-      vi.useFakeTimers();
+    it('navigates through home -> change language -> help -> PACS print slip -> Start Over', () => {
       render(<App />);
 
-      // 1. Advance past splash screen (auto-transitions after 1500ms)
-      act(() => {
-        vi.advanceTimersByTime(2500);
-      });
+      // 1. App starts directly on Home Screen in English
+      expect(screen.getByText(stringsEn.howCanWeHelp)).toBeInTheDocument();
 
-      // 2. Language Selection: Select Marathi
+      // 2. Change Language: Open language modal and select Marathi
+      const changeLangBtn = screen.getByRole('button', { name: new RegExp(stringsEn.changeLanguage, 'i') });
+      fireEvent.click(changeLangBtn);
+
       const mrCard = screen.getByRole('button', { name: /मराठी/i });
       fireEvent.click(mrCard);
 
@@ -541,11 +541,9 @@ describe('K8: Raspberry Pi Kiosk Hardware Integration', () => {
       const confirmResetBtn = within(dialog).getByRole('button', { name: new RegExp(`^${stringsMr.promptStartOver}$`, 'i') });
       fireEvent.click(confirmResetBtn);
 
-      // 8. Returns to Language Selection with fresh state
-      expect(screen.getByText(/Choose Your Language/i)).toBeInTheDocument();
+      // 8. Returns directly to Home Screen with default English state
+      expect(screen.getByText(stringsEn.howCanWeHelp)).toBeInTheDocument();
       expect(getActivePrintSlip()).toBeNull();
-
-      vi.useRealTimers();
     });
   });
 });

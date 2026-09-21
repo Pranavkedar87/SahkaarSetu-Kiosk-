@@ -32,7 +32,7 @@ interface KioskSessionContextValue {
 
 const INITIAL_SESSION: KioskSession = {
   language: 'en',
-  screen: 'splash',
+  screen: 'home',
   activeOperation: false,
   messages: [],
   documentContext: null,
@@ -80,12 +80,11 @@ function sessionReducer(state: KioskSession, action: Action): KioskSession {
       if (state.documentContext?.imageObjectUrl) {
         URL.revokeObjectURL(state.documentContext.imageObjectUrl);
       }
-      // Return to a clean state, preserving only language for one last use,
-      // then immediately switch screen to 'language' so the next citizen
-      // chooses their own.
+      // Return to a clean state directly on HomeScreen with default English language.
       return {
         ...INITIAL_SESSION,
-        screen: 'language',
+        screen: 'home',
+        language: 'en',
       };
     }
 

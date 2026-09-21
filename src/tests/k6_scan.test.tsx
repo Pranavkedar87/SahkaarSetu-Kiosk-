@@ -767,22 +767,10 @@ describe('K6: Document Scan & Vision Integration', () => {
   });
 
   // ── 20. Full App Navigation Integration Flow ────────────────────────────────
-  it('navigates from Splash -> Language -> Home -> Tap Scan Document -> ScanScreen -> Back', async () => {
+  it('navigates from Home -> Tap Scan Document -> ScanScreen -> Back', async () => {
     render(<App />);
 
-    // 1. Splash screen auto-advances after 1800ms
-    await waitFor(
-      () => {
-        expect(screen.getByRole('heading', { name: /choose your language/i })).toBeInTheDocument();
-      },
-      { timeout: 3500 }
-    );
-
-    // 2. Language Selection -> choose English
-    const engBtn = screen.getByRole('button', { name: /English/i });
-    fireEvent.click(engBtn);
-
-    // 3. Home Screen -> tap Scan Document
+    // 1. Home Screen -> tap Scan Document
     await waitFor(() => {
       expect(screen.getByText(/How can we help you\?/i)).toBeInTheDocument();
     });

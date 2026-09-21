@@ -22,6 +22,7 @@ import { HelpScreen } from './pages/HelpScreen';
 import { VoiceScreen } from './pages/VoiceScreen';
 import { TimeoutWarningModal } from './components/common/TimeoutWarningModal';
 import { ConfirmDialog } from './components/common/ConfirmDialog';
+import { LanguageModal } from './components/common/LanguageModal';
 import { getStrings } from './i18n';
 import type { LanguageCode, SpeakButtonState } from './types';
 
@@ -42,34 +43,40 @@ function KioskApp() {
   // Start Over confirmation modal state
   const [showConfirmStartOver, setShowConfirmStartOver] = useState(false);
 
+  // Language selection modal state
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
+
   // Speak button interactive placeholder state for K3
   const [speakState] = useState<SpeakButtonState>('idle');
 
   // Inactivity timeout — active on all operational kiosk screens
-  const isKioskActive =
-    session.screen !== 'splash' && session.screen !== 'language';
+  const isKioskActive = session.screen !== 'splash';
 
   const { showWarning, resetTimer } = useInactivityTimeout({
     activeOperation: session.activeOperation,
     onTimeout: () => {
       setShowConfirmStartOver(false);
+      setShowLanguageModal(false);
       resetSession();
     },
     enabled: isKioskActive,
   });
 
-  // ── Splash → Language ──────────────────────────────────────────────────────
+  // ── Splash → Home ──────────────────────────────────────────────────────────
   const handleSplashReady = useCallback(() => {
-    setScreen('language');
+    setScreen('home');
   }, [setScreen]);
 
-  // ── Language → Home ────────────────────────────────────────────────────────
+  // ── Language Selection ─────────────────────────────────────────────────────
   const handleSelectLanguage = useCallback(
     (lang: LanguageCode) => {
       setLanguage(lang);
-      setScreen('home');
+      setShowLanguageModal(false);
+      if (session.screen === 'language') {
+        setScreen('home');
+      }
     },
-    [setLanguage, setScreen]
+    [setLanguage, setScreen, session.screen]
   );
 
   // ── Home actions ───────────────────────────────────────────────────────────
@@ -114,10 +121,14 @@ function KioskApp() {
     [addMessage, setScreen]
   );
 
-  // ── Change language → back to language screen ──────────────────────────────
+  // ── Change language → open modal selector ─────────────────────────────────
   const handleChangeLanguage = useCallback(() => {
-    setScreen('language');
-  }, [setScreen]);
+    setShowLanguageModal(true);
+  }, []);
+
+  const handleCloseLanguageModal = useCallback(() => {
+    setShowLanguageModal(false);
+  }, []);
 
   // ── Start Over confirmation ────────────────────────────────────────────────
   const handlePromptStartOver = useCallback(() => {
@@ -126,6 +137,7 @@ function KioskApp() {
 
   const handleConfirmStartOver = useCallback(() => {
     setShowConfirmStartOver(false);
+    setShowLanguageModal(false);
     resetSession();
   }, [resetSession]);
 
@@ -309,6 +321,15 @@ function KioskApp() {
           strings={strings}
           onContinue={handleContinue}
           onStartOver={resetSession}
+        />
+      )}
+
+      {/* Language Selection Modal */}
+      {showLanguageModal && (
+        <LanguageModal
+          currentLanguage={session.language}
+          onSelectLanguage={handleSelectLanguage}
+          onClose={handleCloseLanguageModal}
         />
       )}
     </>

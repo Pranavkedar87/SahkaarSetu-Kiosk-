@@ -735,7 +735,7 @@ describe('K5: Text Query Interface & Pipeline', () => {
 });
 
 describe('K5: Full App Type Navigation & Integration Flow', () => {
-  it('navigates splash -> language -> home -> tap Type -> ask question -> view answer -> voice handoff', async () => {
+  it('launches directly on home -> tap Type -> ask question -> view answer -> voice handoff', async () => {
     vi.mocked(api.sendQuery).mockResolvedValueOnce({
       answer: 'Integrated answer for cooperative member',
       display_answer: 'Integrated answer for cooperative member',
@@ -745,23 +745,12 @@ describe('K5: Full App Type Navigation & Integration Flow', () => {
 
     render(<App />);
 
-    // 1. Splash screen auto-advances
-    await waitFor(
-      () => {
-        expect(screen.getByRole('heading', { name: /choose your language/i })).toBeInTheDocument();
-      },
-      { timeout: 3500 }
-    );
-
-    // 2. Select English
-    fireEvent.click(screen.getByRole('button', { name: /english/i }));
-
-    // 3. Home screen: tap Type
+    // 1. Home screen: tap Type
     const typeBtn = await screen.findByRole('button', { name: /type/i });
     expect(typeBtn).toBeInTheDocument();
     fireEvent.click(typeBtn);
 
-    // 4. Type screen opens
+    // 2. Type screen opens
     const input = await screen.findByPlaceholderText(/type your question/i);
     expect(input).toBeInTheDocument();
 

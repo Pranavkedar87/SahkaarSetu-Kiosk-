@@ -19,6 +19,7 @@
 
 import React, { useState, useEffect } from 'react';
 import type { KioskStrings } from '../../i18n';
+import type { VoiceFailureLayer } from '../../types';
 
 export type AssistantState = 'idle' | 'listening' | 'thinking' | 'speaking' | 'error' | 'success';
 
@@ -28,6 +29,7 @@ interface Props {
   strings: KioskStrings;
   speechText?: string;         // Current speech bubble / answer text
   userTranscript?: string;     // What the citizen said
+  failureLayer?: VoiceFailureLayer;
   isAudioPlaying?: boolean;
   onPlayAgain?: () => void;
   onStopAudio?: () => void;
@@ -41,6 +43,7 @@ export function SahkaarSetuAssistant({
   strings,
   speechText,
   userTranscript,
+  failureLayer,
   isAudioPlaying = false,
   onPlayAgain,
   onStopAudio,
@@ -140,6 +143,7 @@ export function SahkaarSetuAssistant({
       className={className}
       data-testid="sahkaarsetu-assistant"
       data-assistant-state={state}
+      data-failure-layer={failureLayer || undefined}
       style={{
         display: 'flex',
         flexDirection: 'column',

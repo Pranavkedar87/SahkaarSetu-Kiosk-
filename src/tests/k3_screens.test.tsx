@@ -272,20 +272,10 @@ describe('PrimarySpeakButton States', () => {
 });
 
 describe('App Navigation Flow (K3)', () => {
-  it('allows navigating from Splash → Language → Home → Type → Back to Home', async () => {
-    vi.useFakeTimers();
+  it('allows navigating directly on Home → Type → Back to Home', async () => {
     render(<App />);
 
-    // Advance past splash
-    act(() => {
-      vi.advanceTimersByTime(2000);
-    });
-
-    // In Language screen, select English
-    const enBtn = screen.getByRole('button', { name: /English/i });
-    fireEvent.click(enBtn);
-
-    // Now in Home screen
+    // Directly in Home screen
     expect(screen.getByText('How can we help you?')).toBeInTheDocument();
 
     // Click Type button
@@ -301,22 +291,13 @@ describe('App Navigation Flow (K3)', () => {
 
     // Back in Home screen
     expect(screen.getByText('How can we help you?')).toBeInTheDocument();
-
-    vi.useRealTimers();
   });
 
   it('clicking Start Over from Home opens ConfirmDialog', () => {
-    vi.useFakeTimers();
     render(<App />);
 
-    // Advance past splash
-    act(() => {
-      vi.advanceTimersByTime(2000);
-    });
-
-    // Select English
-    const enBtn = screen.getByRole('button', { name: /English/i });
-    fireEvent.click(enBtn);
+    // Directly in Home screen
+    expect(screen.getByText('How can we help you?')).toBeInTheDocument();
 
     // Click Start Over in header
     const startOverBtn = screen.getByRole('button', { name: /Start Over/i });
@@ -325,7 +306,5 @@ describe('App Navigation Flow (K3)', () => {
     // ConfirmDialog should now be visible
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByText(strings.startOverConfirmTitle)).toBeInTheDocument();
-
-    vi.useRealTimers();
   });
 });

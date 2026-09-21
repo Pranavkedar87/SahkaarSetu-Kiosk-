@@ -21,7 +21,7 @@ import { useAudioPlayer } from './useAudioPlayer';
 import { useLipSync } from './useLipSync';
 import { transcribeAudio, sendQuery, synthesizeSpeech } from '../services/api';
 import type { KioskStrings } from '../i18n';
-import type { LanguageCode, QueryResponse } from '../types';
+import type { LanguageCode, QueryResponse, VoiceFailureLayer } from '../types';
 import type { AssistantState } from '../components/kiosk/SahkaarSetuAssistant';
 
 export interface UseVoiceInteractionOptions {
@@ -37,6 +37,7 @@ export interface UseVoiceInteractionReturn {
   userTranscript: string;
   displayAnswer: string;
   errorMessage: string | null;
+  failureLayer: VoiceFailureLayer | null;
   isPlaying: boolean;
   startListening: () => Promise<boolean>;
   stopListening: () => Promise<void>;
@@ -69,6 +70,7 @@ export function useVoiceInteraction({
   const [displayAnswer, setDisplayAnswer] = useState<string>('');
   const [queryResponse, setQueryResponse] = useState<QueryResponse | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [failureLayer, setFailureLayer] = useState<VoiceFailureLayer | null>(null);
 
   const isSubmittingRef = useRef(false);
   const sessionIdRef = useRef<string>(
@@ -110,61 +112,124 @@ export function useVoiceInteraction({
       isSubmittingRef.current = true;
       setState('thinking');
       setErrorMessage(null);
+      setFailureLayer(null);
 
+      // Verify Blob size
+      if (!audioBlob || audioBlob.size < 100) {
+        setState('error');
+        setFailureLayer('NO_SPEECH');
+        setErrorMessage(strings.voiceNoSpeech || 'Could not hear any speech. Please try again.');
+        isSubmittingRef.current = false;
+        return;
+      }
+
+      let recognizedText = '';
+
+      // ── Step 1: STT Transcription ─────────────────────────────────────────
       try {
-        // Step 1: STT Transcription
         const sttRes = await transcribeAudio(
           audioBlob,
           language,
           sessionIdRef.current
         );
-
-        const recognizedText = (sttRes.transcript || '').trim();
-        if (!recognizedText) {
-          setState('error');
-          setErrorMessage(strings.voiceNoSpeech || 'Could not hear any speech. Please try again.');
-          return;
+        recognizedText = (sttRes.transcript || '').trim();
+      } catch (sttErr: any) {
+        console.error('[useVoiceInteraction] Transcription failed:', sttErr);
+        setState('error');
+        if (
+          !navigator.onLine ||
+          sttErr.name === 'AbortError' ||
+          sttErr.message?.includes('Failed to fetch') ||
+          sttErr.message?.includes('NetworkError') ||
+          sttErr.message?.includes('offline')
+        ) {
+          setFailureLayer('NETWORK_UNAVAILABLE');
+          setErrorMessage(strings.voiceServiceUnavailable || 'Network connection unavailable. Please check your connection or type your question.');
+        } else {
+          setFailureLayer('TRANSCRIPTION_FAILED');
+          setErrorMessage(strings.stateErrorTryAgain || 'Could not understand audio. Please try speaking again or type your question.');
         }
+        isSubmittingRef.current = false;
+        return;
+      }
 
-        setUserTranscript(recognizedText);
+      // Check for empty or noise-only transcript (e.g. "." or "Thank you." from Whisper hallucination on silence)
+      if (
+        !recognizedText ||
+        recognizedText === '.' ||
+        recognizedText === '...' ||
+        recognizedText.toLowerCase() === 'thank you.' ||
+        recognizedText.toLowerCase() === 'thank you'
+      ) {
+        setState('error');
+        setFailureLayer('NO_SPEECH');
+        setErrorMessage(strings.voiceNoSpeech || 'Could not hear any speech. Please speak clearly and try again.');
+        isSubmittingRef.current = false;
+        return;
+      }
 
-        // Step 2: Central governed RAG Query
-        const queryRes = await sendQuery({
+      setUserTranscript(recognizedText);
+
+      // ── Step 2: Central governed RAG Query ─────────────────────────────────
+      let queryRes: QueryResponse;
+      try {
+        queryRes = await sendQuery({
           message: recognizedText,
           language,
           session_id: sessionIdRef.current,
           response_mode: 'voice',
         });
-
-        setQueryResponse(queryRes);
-        const rawDisplay = queryRes.display_answer || queryRes.answer || '';
-        const rawSpoken = queryRes.spoken_answer || rawDisplay;
-        const cleanSpoken = stripMarkdown(rawSpoken);
-
-        setDisplayAnswer(rawDisplay);
-
-        if (onMessageAdded) {
-          onMessageAdded(recognizedText, rawDisplay);
+      } catch (queryErr: any) {
+        console.error('[useVoiceInteraction] Query failed:', queryErr);
+        setState('error');
+        if (
+          !navigator.onLine ||
+          queryErr.name === 'AbortError' ||
+          queryErr.message?.includes('Failed to fetch') ||
+          queryErr.message?.includes('NetworkError')
+        ) {
+          setFailureLayer('NETWORK_UNAVAILABLE');
+          setErrorMessage(strings.voiceServiceUnavailable || 'Network connection unavailable. Please check your connection or type your question.');
+        } else {
+          setFailureLayer('QUERY_FAILED');
+          setErrorMessage(strings.stateErrorTryAgain || 'Unable to process question. Please try asking again or type your question.');
         }
+        isSubmittingRef.current = false;
+        return;
+      }
 
-        // Step 3: TTS Speech Synthesis & Playback
-        setState('speaking');
+      setQueryResponse(queryRes);
+      const rawDisplay = queryRes.display_answer || queryRes.answer || '';
+      const rawSpoken = queryRes.spoken_answer || rawDisplay;
+      const cleanSpoken = stripMarkdown(rawSpoken);
+
+      setDisplayAnswer(rawDisplay);
+
+      if (onMessageAdded) {
+        onMessageAdded(recognizedText, rawDisplay);
+      }
+
+      // ── Step 3: TTS Speech Synthesis & Playback ────────────────────────────
+      setState('speaking');
+      try {
+        let played = false;
         try {
           const ttsRes = await synthesizeSpeech(cleanSpoken, language, 'female');
           if (ttsRes && ttsRes.success && ttsRes.audio_content) {
             await audioPlayer.play(ttsRes.audio_content, cleanSpoken, language);
-          } else {
-            // Client SpeechSynthesis fallback
-            await audioPlayer.play(null, cleanSpoken, language);
+            played = true;
           }
         } catch (ttsErr) {
-          console.warn('[useVoiceInteraction] TTS fallback:', ttsErr);
+          console.warn('[useVoiceInteraction] Server TTS failed, falling back to browser speech synthesis:', ttsErr);
+        }
+
+        if (!played) {
+          // Client SpeechSynthesis fallback
           await audioPlayer.play(null, cleanSpoken, language);
         }
-      } catch (err: any) {
-        console.error('[useVoiceInteraction] Error:', err);
-        setState('error');
-        setErrorMessage(strings.voiceServiceUnavailable || 'Service temporarily unavailable. Please try again.');
+      } catch (playbackErr) {
+        console.warn('[useVoiceInteraction] Playback failed:', playbackErr);
+        setFailureLayer('PLAYBACK_FAILED');
       } finally {
         isSubmittingRef.current = false;
       }
@@ -180,22 +245,33 @@ export function useVoiceInteraction({
   useEffect(() => {
     if (voiceRecorder.status === 'error') {
       setState('error');
-      if (voiceRecorder.errorCode === 'permission_denied') {
+      const layer = voiceRecorder.failureLayer || (
+        voiceRecorder.errorCode === 'permission_denied'
+          ? 'MIC_PERMISSION'
+          : voiceRecorder.errorCode === 'no_device' || voiceRecorder.errorCode === 'unsupported'
+          ? 'MIC_UNAVAILABLE'
+          : voiceRecorder.errorCode === 'empty' || voiceRecorder.errorCode === 'too_short'
+          ? 'NO_SPEECH'
+          : 'RECORDING_FAILED'
+      );
+      setFailureLayer(layer);
+
+      if (layer === 'MIC_PERMISSION') {
         setErrorMessage(strings.voiceMicDenied || 'Microphone access was denied. Please allow microphone permissions.');
-      } else if (
-        voiceRecorder.errorCode === 'empty' ||
-        voiceRecorder.errorCode === 'too_short'
-      ) {
+      } else if (layer === 'MIC_UNAVAILABLE') {
+        setErrorMessage('Microphone device not found or unavailable.');
+      } else if (layer === 'NO_SPEECH') {
         setErrorMessage(strings.voiceNoSpeech || 'Could not hear any speech. Please try again.');
       } else {
-        setErrorMessage(strings.voiceServiceUnavailable || 'Service temporarily unavailable.');
+        setErrorMessage('Audio recording failed. Please try again.');
       }
     }
-  }, [voiceRecorder.status, voiceRecorder.errorCode, strings]);
+  }, [voiceRecorder.status, voiceRecorder.errorCode, voiceRecorder.failureLayer, strings]);
 
   const startListening = useCallback(async () => {
     audioPlayer.stop();
     setErrorMessage(null);
+    setFailureLayer(null);
     const started = await voiceRecorder.startRecording();
     if (started) {
       setState('listening');
@@ -226,6 +302,7 @@ export function useVoiceInteraction({
     setDisplayAnswer('');
     setQueryResponse(null);
     setErrorMessage(null);
+    setFailureLayer(null);
     setActiveOperation?.(false);
   }, [voiceRecorder, audioPlayer, setActiveOperation]);
 
@@ -235,6 +312,7 @@ export function useVoiceInteraction({
     userTranscript,
     displayAnswer,
     errorMessage,
+    failureLayer,
     isPlaying: audioPlayer.isPlaying,
     startListening,
     stopListening,

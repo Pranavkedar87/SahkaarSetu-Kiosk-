@@ -967,29 +967,17 @@ describe('K4: Full App Voice Integration Flow', () => {
     });
   });
 
-  it('navigates from splash -> language -> home -> tap Speak -> enters VoiceScreen', async () => {
+  it('launches directly on home -> tap Speak -> enters listening state', async () => {
     render(<App />);
 
-    // 1. Splash screen auto-advances after 1800ms
-    await waitFor(
-      () => {
-        expect(screen.getByRole('heading', { name: /choose your language/i })).toBeInTheDocument();
-      },
-      { timeout: 3500 }
-    );
-
-    // 2. Language screen: select English
-    const enBtn = screen.getByRole('button', { name: /english/i });
-    fireEvent.click(enBtn);
-
-    // 3. Home screen: verify primary Speak button
+    // 1. Home screen: verify primary Speak button
     const speakBtn = await screen.findByRole('button', { name: /speak/i });
     expect(speakBtn).toBeInTheDocument();
 
     // Tap Speak button
     fireEvent.click(speakBtn);
 
-    // 4. Voice screen is entered and listening
+    // 2. Inline voice interaction enters listening state
     await waitFor(() => {
       expect(screen.getByText(/listening/i)).toBeInTheDocument();
       expect(screen.getByText(/tap to finish speaking/i)).toBeInTheDocument();

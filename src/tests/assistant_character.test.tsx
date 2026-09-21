@@ -188,17 +188,7 @@ describe('SahkaarSetu Virtual Assistant Character', () => {
   it('14. main microphone does not navigate to VoiceScreen', async () => {
     render(<App />);
 
-    // Advance through splash to language
-    await waitFor(
-      () => {
-        expect(screen.getByRole('heading', { name: /choose your language/i })).toBeInTheDocument();
-      },
-      { timeout: 3500 }
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: /english/i }));
-
-    // On Home screen
+    // On Home screen directly
     const micBtn = await screen.findByRole('button', { name: /speak/i });
     expect(micBtn).toBeInTheDocument();
     expect(screen.getByTestId('sahkaarsetu-assistant')).toBeInTheDocument();
@@ -215,15 +205,6 @@ describe('SahkaarSetu Virtual Assistant Character', () => {
   it('15. Ask by Voice action card uses inline voice without navigating to VoiceScreen', async () => {
     render(<App />);
 
-    await waitFor(
-      () => {
-        expect(screen.getByRole('heading', { name: /choose your language/i })).toBeInTheDocument();
-      },
-      { timeout: 3500 }
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: /english/i }));
-
     const voiceCard = await screen.findByText(stringsEn.homeAskByVoice);
     expect(voiceCard).toBeInTheDocument();
 
@@ -234,17 +215,8 @@ describe('SahkaarSetu Virtual Assistant Character', () => {
     expect(screen.getByRole('button', { name: /speak/i })).toBeInTheDocument();
   });
 
-  it('16. Start Over resets assistant and session', async () => {
+  it('16. Start Over resets assistant and session directly to HomeScreen', async () => {
     render(<App />);
-
-    await waitFor(
-      () => {
-        expect(screen.getByRole('heading', { name: /choose your language/i })).toBeInTheDocument();
-      },
-      { timeout: 3500 }
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: /english/i }));
 
     const startOverBtn = await screen.findByRole('button', { name: stringsEn.promptStartOver });
     fireEvent.click(startOverBtn);
@@ -254,9 +226,11 @@ describe('SahkaarSetu Virtual Assistant Character', () => {
     const confirmButtons = screen.getAllByRole('button', { name: stringsEn.promptStartOver });
     fireEvent.click(confirmButtons[confirmButtons.length - 1]);
 
-    // Resets to Language screen
+    // Resets directly to Home screen with assistant mounted in idle state
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /choose your language/i })).toBeInTheDocument();
+      expect(screen.getByTestId('sahkaarsetu-assistant')).toBeInTheDocument();
+      expect(screen.getByText(stringsEn.homeGreeting)).toBeInTheDocument();
+      expect(screen.getByText(stringsEn.homeSubGreeting)).toBeInTheDocument();
     });
   });
 });

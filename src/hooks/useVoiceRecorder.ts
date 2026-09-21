@@ -12,6 +12,7 @@
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import type { VoiceFailureLayer } from '../types';
 
 export type VoiceRecorderStatus = 'idle' | 'listening' | 'processing' | 'error';
 
@@ -32,6 +33,7 @@ export interface UseVoiceRecorderReturn {
   status: VoiceRecorderStatus;
   errorCode: VoiceRecorderErrorCode | null;
   errorMessage: string | null;
+  failureLayer: VoiceFailureLayer | null;
   startRecording: () => Promise<boolean>;
   stopRecording: () => void;
   cancelRecording: () => void;
@@ -39,14 +41,14 @@ export interface UseVoiceRecorderReturn {
   isSupported: boolean;
 }
 
-function getBestSupportedMimeType(): string {
+export function getBestSupportedMimeType(): string {
   if (typeof MediaRecorder === 'undefined') return '';
   const candidateTypes = [
     'audio/webm;codecs=opus',
     'audio/webm',
+    'audio/ogg;codecs=opus',
     'audio/mp4',
     'audio/aac',
-    'audio/ogg;codecs=opus',
     'audio/wav',
   ];
   for (const mime of candidateTypes) {
@@ -64,6 +66,7 @@ export function useVoiceRecorder({
   const [status, setStatus] = useState<VoiceRecorderStatus>('idle');
   const [errorCode, setErrorCode] = useState<VoiceRecorderErrorCode | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [failureLayer, setFailureLayer] = useState<VoiceFailureLayer | null>(null);
 
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -123,6 +126,7 @@ export function useVoiceRecorder({
   const clearError = useCallback(() => {
     setErrorCode(null);
     setErrorMessage(null);
+    setFailureLayer(null);
     setStatus('idle');
   }, []);
 
@@ -131,6 +135,7 @@ export function useVoiceRecorder({
     setStatus('idle');
     setErrorCode(null);
     setErrorMessage(null);
+    setFailureLayer(null);
   }, [cleanup]);
 
   const stopRecording = useCallback(() => {
@@ -165,6 +170,7 @@ export function useVoiceRecorder({
     if (!isSupported) {
       setStatus('error');
       setErrorCode('unsupported');
+      setFailureLayer('MIC_UNAVAILABLE');
       setErrorMessage('Audio recording is not supported in this browser.');
       return false;
     }
@@ -199,6 +205,7 @@ export function useVoiceRecorder({
         cleanup();
         setStatus('error');
         setErrorCode('recording_error');
+        setFailureLayer('RECORDING_FAILED');
         setErrorMessage('Recording failed. Please try again.');
       };
 
@@ -227,6 +234,7 @@ export function useVoiceRecorder({
         if (audioBlob.size < 100) {
           setStatus('error');
           setErrorCode('empty');
+          setFailureLayer('NO_SPEECH');
           setErrorMessage("I couldn't hear anything. Please try again.");
           cleanup();
           return;
@@ -235,6 +243,7 @@ export function useVoiceRecorder({
         if (duration < 400) {
           setStatus('error');
           setErrorCode('too_short');
+          setFailureLayer('NO_SPEECH');
           setErrorMessage("I couldn't hear anything. Please try again.");
           cleanup();
           return;
@@ -245,7 +254,12 @@ export function useVoiceRecorder({
         }
       };
 
-      mediaRecorder.start(250); // 250ms chunks
+      // In Safari (audio/mp4), avoid timeslice to prevent fragmented moof/mdat atoms
+      if (mimeType.includes('mp4')) {
+        mediaRecorder.start();
+      } else {
+        mediaRecorder.start(250); // 250ms chunks for WebM Opus
+      }
       setStatus('listening');
 
       // 15-second safety timer
@@ -264,15 +278,18 @@ export function useVoiceRecorder({
         err.name === 'PermissionDeniedError'
       ) {
         setErrorCode('permission_denied');
+        setFailureLayer('MIC_PERMISSION');
         setErrorMessage('Microphone permission is required to use voice.');
       } else if (
         err.name === 'NotFoundError' ||
         err.name === 'DevicesNotFoundError'
       ) {
         setErrorCode('no_device');
+        setFailureLayer('MIC_UNAVAILABLE');
         setErrorMessage('No microphone device found on this system.');
       } else {
         setErrorCode('recording_error');
+        setFailureLayer('RECORDING_FAILED');
         setErrorMessage('Unable to access microphone. Please try again.');
       }
 
@@ -284,6 +301,7 @@ export function useVoiceRecorder({
     status,
     errorCode,
     errorMessage,
+    failureLayer,
     startRecording,
     stopRecording,
     cancelRecording,

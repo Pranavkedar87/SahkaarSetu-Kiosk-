@@ -45,6 +45,17 @@ export type KioskScreen = 'splash' | 'language' | 'home' | 'voice' | 'type' | 's
 
 export type SpeakButtonState = 'idle' | 'listening' | 'processing' | 'error';
 
+export type VoiceFailureLayer =
+  | 'MIC_PERMISSION'
+  | 'MIC_UNAVAILABLE'
+  | 'RECORDING_FAILED'
+  | 'NO_SPEECH'
+  | 'TRANSCRIPTION_FAILED'
+  | 'QUERY_FAILED'
+  | 'TTS_FAILED'
+  | 'PLAYBACK_FAILED'
+  | 'NETWORK_UNAVAILABLE';
+
 export type ScanViewState =
   | 'idle'
   | 'camera_active'

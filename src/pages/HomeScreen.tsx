@@ -464,6 +464,7 @@ export function HomeScreen({
               strings={strings}
               speechText={resolvedSpeechText}
               userTranscript={resolvedUserTranscript}
+              failureLayer={voice.failureLayer || undefined}
               isAudioPlaying={voice.isPlaying}
               onPlayAgain={voice.replayAudio}
               onStopAudio={voice.stopAudio}

@@ -20,9 +20,11 @@ import type {
   VisionQueryRequest,
 } from '../types';
 
-/** Base URL resolved from Vite environment variable at build time. */
+const DEFAULT_PROD_URL = 'https://sih26088-cooperative-ai.onrender.com';
+
+/** Base URL resolved from Vite environment variable at build time, with live backend fallback. */
 const API_BASE_URL: string =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? 'http://localhost:8000';
+  (import.meta.env.VITE_API_BASE_URL as string | undefined) || DEFAULT_PROD_URL;
 
 export { API_BASE_URL };
 

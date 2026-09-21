@@ -23,14 +23,14 @@ function SessionReader({ onState }: { onState: (s: ReturnType<typeof useKioskSes
 }
 
 describe('KioskSessionContext', () => {
-  it('initializes with splash screen', () => {
+  it('initializes directly with home screen', () => {
     let captured: ReturnType<typeof useKioskSession> | null = null;
     render(
       <KioskSessionProvider>
         <SessionReader onState={(s) => { captured = s; }} />
       </KioskSessionProvider>
     );
-    expect(captured!.session.screen).toBe('splash');
+    expect(captured!.session.screen).toBe('home');
   });
 
   it('initializes with English language', () => {
@@ -103,16 +103,20 @@ describe('KioskSessionContext', () => {
     expect(captured!.session.messages).toHaveLength(0);
   });
 
-  it('resetSession returns screen to language', () => {
+  it('resetSession returns screen to home and resets language to en', () => {
     let captured: ReturnType<typeof useKioskSession> | null = null;
     render(
       <KioskSessionProvider>
         <SessionReader onState={(s) => { captured = s; }} />
       </KioskSessionProvider>
     );
-    act(() => { captured!.setScreen('home'); });
+    act(() => {
+      captured!.setScreen('type');
+      captured!.setLanguage('mr');
+    });
     act(() => { captured!.resetSession(); });
-    expect(captured!.session.screen).toBe('language');
+    expect(captured!.session.screen).toBe('home');
+    expect(captured!.session.language).toBe('en');
   });
 
   it('resetSession clears document context', () => {
