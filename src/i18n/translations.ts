@@ -91,6 +91,23 @@ export interface KioskStrings {
   printDone: string;
   printTryAgain: string;
   printKeepingSlipNotice: string;
+  // ── K9 Home Redesign ─────────────────────────────────────────────────────────
+  homeGreeting: string;
+  homeSubGreeting: string;
+  homeQuote: string;
+  homeTapToSpeak: string;
+  homeAskByVoice: string;
+  homeAskByVoiceDesc: string;
+  homeTypeQuestion: string;
+  homeTypeQuestionDesc: string;
+  homeScanDocument: string;
+  homeScanDocumentDesc: string;
+  homePacsAssistance: string;
+  homePacsAssistanceDesc: string;
+  homeFarmerFriendly: string;
+  homeTrustedInfo: string;
+  homeBrighterTomorrow: string;
+  homeCoopFooter: string;
 }
 
 const en: KioskStrings = {
@@ -172,6 +189,22 @@ const en: KioskStrings = {
   printDone: "Done",
   printTryAgain: "Try Again",
   printKeepingSlipNotice: "Please keep this slip for reference.",
+  homeGreeting: 'Namaste!',
+  homeSubGreeting: 'How can I help you today?',
+  homeQuote: 'Your Questions, Our Solutions',
+  homeTapToSpeak: 'Tap to speak',
+  homeAskByVoice: 'Ask by Voice',
+  homeAskByVoiceDesc: 'Speak your question',
+  homeTypeQuestion: 'Type Question',
+  homeTypeQuestionDesc: 'Ask by typing',
+  homeScanDocument: 'Scan Document',
+  homeScanDocumentDesc: 'Upload or capture',
+  homePacsAssistance: 'PACS Assistance',
+  homePacsAssistanceDesc: 'Get human support',
+  homeFarmerFriendly: 'Farmer Friendly',
+  homeTrustedInfo: 'Trusted Information',
+  homeBrighterTomorrow: 'For a Stronger Tomorrow',
+  homeCoopFooter: 'Stronger Cooperatives, A Brighter India',
 };
 
 const hi: KioskStrings = {
@@ -253,6 +286,22 @@ const hi: KioskStrings = {
   printDone: "पूर्ण",
   printTryAgain: "पुनः प्रयास करें",
   printKeepingSlipNotice: "कृपया संदर्भ के लिए यह पर्ची संभाल कर रखें।",
+  homeGreeting: 'नमस्ते!',
+  homeSubGreeting: 'आज मैं आपकी कैसे मदद कर सकता हूँ?',
+  homeQuote: 'आपके प्रश्न, हमारा समाधान',
+  homeTapToSpeak: 'बोलने के लिए टैप करें',
+  homeAskByVoice: 'आवाज़ से पूछें',
+  homeAskByVoiceDesc: 'अपना सवाल बोलें',
+  homeTypeQuestion: 'सवाल टाइप करें',
+  homeTypeQuestionDesc: 'टाइप करके पूछें',
+  homeScanDocument: 'दस्तावेज़ स्कैन करें',
+  homeScanDocumentDesc: 'अपलोड या कैप्चर करें',
+  homePacsAssistance: 'PACS सहायता',
+  homePacsAssistanceDesc: 'व्यक्तिगत सहायता प्राप्त करें',
+  homeFarmerFriendly: 'किसान हितैषी',
+  homeTrustedInfo: 'विश्वसनीय जानकारी',
+  homeBrighterTomorrow: 'बेहतर कल के लिए',
+  homeCoopFooter: 'मज़बूत सहकारिताएँ, उज्ज्वल भारत',
 };
 
 const mr: KioskStrings = {
@@ -334,6 +383,22 @@ const mr: KioskStrings = {
   printDone: "झाले",
   printTryAgain: "पुन्हा प्रयत्न करा",
   printKeepingSlipNotice: "कृपया संदर्भासाठी ही पावती जपून ठेवा.",
+  homeGreeting: 'नमस्कार!',
+  homeSubGreeting: 'आज आम्ही तुम्हाला कशी मदत करू शकतो?',
+  homeQuote: 'तुमचे प्रश्न, आमचे समाधान',
+  homeTapToSpeak: 'बोलण्यासाठी टॅप करा',
+  homeAskByVoice: 'आवाजाने विचारा',
+  homeAskByVoiceDesc: 'तुमचा प्रश्न बोला',
+  homeTypeQuestion: 'प्रश्न टाइप करा',
+  homeTypeQuestionDesc: 'टाइप करून विचारा',
+  homeScanDocument: 'कागदपत्र स्कॅन करा',
+  homeScanDocumentDesc: 'अपलोड किंवा कॅप्चर करा',
+  homePacsAssistance: 'PACS सहाय्य',
+  homePacsAssistanceDesc: 'व्यक्तिगत मदत मिळवा',
+  homeFarmerFriendly: 'शेतकरी हितैषी',
+  homeTrustedInfo: 'विश्वासार्ह माहिती',
+  homeBrighterTomorrow: 'उज्ज्वल उद्यासाठी',
+  homeCoopFooter: 'सशक्त सहकार, उज्ज्वल भारत',
 };
 
 const gu: KioskStrings = {
@@ -415,6 +480,22 @@ const gu: KioskStrings = {
   printDone: "પૂર્ણ",
   printTryAgain: "ફરી પ્રયાસ કરો",
   printKeepingSlipNotice: "કૃપા કરીને સંદર્ભ માટે આ સ્લિપ સાચવી રાખો.",
+  homeGreeting: 'નમસ્તે!',
+  homeSubGreeting: 'આજે હું તમને કેવી રીતે મદદ કરી શકું?',
+  homeQuote: 'તમારા પ્રશ્નો, અમારા ઉકેલ',
+  homeTapToSpeak: 'બોલવા માટે ટેપ કરો',
+  homeAskByVoice: 'અવાજથી પૂછો',
+  homeAskByVoiceDesc: 'તમારો પ્રશ્ન બોલો',
+  homeTypeQuestion: 'પ્રશ્ન ટાઇપ કરો',
+  homeTypeQuestionDesc: 'ટાઇપ કરીને પૂછો',
+  homeScanDocument: 'દસ્તાવેજ સ્કેન કરો',
+  homeScanDocumentDesc: 'અપલોડ અથવા કેપ્ચર કરો',
+  homePacsAssistance: 'PACS સહાય',
+  homePacsAssistanceDesc: 'વ્યક્તિગત સહાય મેળવો',
+  homeFarmerFriendly: 'ખેડૂત હિતૈષી',
+  homeTrustedInfo: 'વિશ્વસનીય માહિતી',
+  homeBrighterTomorrow: 'ઉજ્જવળ આવતીકાલ માટે',
+  homeCoopFooter: 'મજબૂત સહકારી, ઉજ્જવળ ભારત',
 };
 
 const bn: KioskStrings = {
@@ -496,6 +577,22 @@ const bn: KioskStrings = {
   printDone: "সম্পন্ন",
   printTryAgain: "আবার চেষ্টা করুন",
   printKeepingSlipNotice: "অনুগ্রহ করে রেফারেন্সের জন্য এই স্লিপটি রাখুন।",
+  homeGreeting: 'নমস্কার!',
+  homeSubGreeting: 'আজ আমি আপনাকে কীভাবে সাহায্য করতে পারি?',
+  homeQuote: 'আপনার প্রশ্ন, আমাদের সমাধান',
+  homeTapToSpeak: 'বলতে ট্যাপ করুন',
+  homeAskByVoice: 'কণ্ঠে জিজ্ঞাসা করুন',
+  homeAskByVoiceDesc: 'আপনার প্রশ্ন বলুন',
+  homeTypeQuestion: 'প্রশ্ন টাইপ করুন',
+  homeTypeQuestionDesc: 'টাইপ করে জিজ্ঞাসা করুন',
+  homeScanDocument: 'নথি স্ক্যান করুন',
+  homeScanDocumentDesc: 'আপলোড বা ক্যাপচার করুন',
+  homePacsAssistance: 'PACS সহায়তা',
+  homePacsAssistanceDesc: 'ব্যক্তিগত সহায়তা পান',
+  homeFarmerFriendly: 'কৃষক বান্ধব',
+  homeTrustedInfo: 'বিশ্বস্ত তথ্য',
+  homeBrighterTomorrow: 'উজ্জ্বল আগামীর জন্য',
+  homeCoopFooter: 'শক্তিশালী সমবায়, উজ্জ্বল ভারত',
 };
 
 const ta: KioskStrings = {
@@ -577,6 +674,22 @@ const ta: KioskStrings = {
   printDone: "முடிந்தது",
   printTryAgain: "மீண்டும் முயற்சிக்கவும்",
   printKeepingSlipNotice: "குறிப்புக்காக இந்த சீட்டை வைத்துக்கொள்ளவும்.",
+  homeGreeting: 'வணக்கம்!',
+  homeSubGreeting: 'இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?',
+  homeQuote: 'உங்கள் கேள்விகள், எங்கள் தீர்வுகள்',
+  homeTapToSpeak: 'பேச தட்டவும்',
+  homeAskByVoice: 'குரலில் கேளுங்கள்',
+  homeAskByVoiceDesc: 'உங்கள் கேள்வியைச் சொல்லுங்கள்',
+  homeTypeQuestion: 'கேள்வி தட்டச்சு செய்யவும்',
+  homeTypeQuestionDesc: 'தட்டச்சு செய்து கேளுங்கள்',
+  homeScanDocument: 'ஆவணம் ஸ்கேன் செய்யவும்',
+  homeScanDocumentDesc: 'பதிவேற்றம் அல்லது படமெடுக்கவும்',
+  homePacsAssistance: 'PACS உதவி',
+  homePacsAssistanceDesc: 'நேரடி உதவி பெறுங்கள்',
+  homeFarmerFriendly: 'விவசாயி நேயமானது',
+  homeTrustedInfo: 'நம்பகமான தகவல்',
+  homeBrighterTomorrow: 'ஒளிமயமான நாளைக்காக',
+  homeCoopFooter: 'வலுவான கூட்டுறவு, ஒளிமயமான இந்தியா',
 };
 
 const te: KioskStrings = {
@@ -658,6 +771,22 @@ const te: KioskStrings = {
   printDone: "పూర్తయింది",
   printTryAgain: "మళ్లీ ప్రయత్నించండి",
   printKeepingSlipNotice: "దయచేసి రిఫరెన్స్ కోసం ఈ రసీదును ఉంచండి.",
+  homeGreeting: 'నమస్కారం!',
+  homeSubGreeting: 'ఈ రోజు నేను మీకు ఎలా సహాయం చేయగలను?',
+  homeQuote: 'మీ ప్రశ్నలు, మా పరిష్కారాలు',
+  homeTapToSpeak: 'మాట్లాడటానికి నొక్కండి',
+  homeAskByVoice: 'గొంతుతో అడగండి',
+  homeAskByVoiceDesc: 'మీ ప్రశ్న చెప్పండి',
+  homeTypeQuestion: 'ప్రశ్న టైప్ చేయండి',
+  homeTypeQuestionDesc: 'టైప్ చేసి అడగండి',
+  homeScanDocument: 'పత్రం స్కాన్ చేయండి',
+  homeScanDocumentDesc: 'అప్లోడ్ లేదా క్యాప్చర్ చేయండి',
+  homePacsAssistance: 'PACS సహాయం',
+  homePacsAssistanceDesc: 'వ్యక్తిగత సహాయం పొందండి',
+  homeFarmerFriendly: 'రైతు స్నేహపూరిత',
+  homeTrustedInfo: 'నమ్మకమైన సమాచారం',
+  homeBrighterTomorrow: 'ఉజ్వల రేపటి కోసం',
+  homeCoopFooter: 'బలమైన సహకారాలు, ఉజ్వల భారతదేశం',
 };
 
 const kn: KioskStrings = {
@@ -739,6 +868,22 @@ const kn: KioskStrings = {
   printDone: "ಮುಗಿದಿದೆ",
   printTryAgain: "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
   printKeepingSlipNotice: "ದಯವಿಟ್ಟು ಉಲ್ಲೇಖಕ್ಕಾಗಿ ಈ ರಸೀದಿಯನ್ನು ಇಟ್ಟುಕೊಳ್ಳಿ.",
+  homeGreeting: 'ನಮಸ್ಕಾರ!',
+  homeSubGreeting: 'ಇಂದು ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು?',
+  homeQuote: 'ನಿಮ್ಮ ಪ್ರಶ್ನೆಗಳು, ನಮ್ಮ ಪರಿಹಾರಗಳು',
+  homeTapToSpeak: 'ಮಾತನಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ',
+  homeAskByVoice: 'ಧ್ವನಿಯಿಂದ ಕೇಳಿ',
+  homeAskByVoiceDesc: 'ನಿಮ್ಮ ಪ್ರಶ್ನೆ ಹೇಳಿ',
+  homeTypeQuestion: 'ಪ್ರಶ್ನೆ ಟೈಪ್ ಮಾಡಿ',
+  homeTypeQuestionDesc: 'ಟೈಪ್ ಮಾಡಿ ಕೇಳಿ',
+  homeScanDocument: 'ಡಾಕ್ಯುಮೆಂಟ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ',
+  homeScanDocumentDesc: 'ಅಪ್ಲೋಡ್ ಅಥವಾ ಕ್ಯಾಪ್ಚರ್ ಮಾಡಿ',
+  homePacsAssistance: 'PACS ಸಹಾಯ',
+  homePacsAssistanceDesc: 'ವೈಯಕ್ತಿಕ ಸಹಾಯ ಪಡೆಯಿರಿ',
+  homeFarmerFriendly: 'ರೈತ ಸ್ನೇಹಿ',
+  homeTrustedInfo: 'ವಿಶ್ವಾಸಾರ್ಹ ಮಾಹಿತಿ',
+  homeBrighterTomorrow: 'ಉಜ್ವಲ ನಾಳೆಗಾಗಿ',
+  homeCoopFooter: 'ಬಲಿಷ್ಠ ಸಹಕಾರಿಗಳು, ಉಜ್ವಲ ಭಾರತ',
 };
 
 const ml: KioskStrings = {
@@ -820,6 +965,22 @@ const ml: KioskStrings = {
   printDone: "പൂർത്തിയായി",
   printTryAgain: "വീണ്ടും ശ്രമിക്കുക",
   printKeepingSlipNotice: "റഫറൻസിനായി ഈ സ്ലിപ്പ് സൂക്ഷിക്കുക.",
+  homeGreeting: 'നമസ്കാരം!',
+  homeSubGreeting: 'ഇന്ന് ഞാൻ നിങ്ങളെ എങ്ങനെ സഹായിക്കാം?',
+  homeQuote: 'നിങ്ങളുടെ ചോദ്യങ്ങൾ, ഞങ്ങളുടെ പരിഹാരങ്ങൾ',
+  homeTapToSpeak: 'സംസാരിക്കാൻ ടാപ്പ് ചെയ്യുക',
+  homeAskByVoice: 'ശബ്ദത്തിൽ ചോദിക്കുക',
+  homeAskByVoiceDesc: 'നിങ്ങളുടെ ചോദ്യം പറയുക',
+  homeTypeQuestion: 'ചോദ്യം ടൈപ്പ് ചെയ്യുക',
+  homeTypeQuestionDesc: 'ടൈപ്പ് ചെയ്ത് ചോദിക്കുക',
+  homeScanDocument: 'രേഖ സ്കാൻ ചെയ്യുക',
+  homeScanDocumentDesc: 'അപ്ലോഡ് അല്ലെങ്കിൽ ക്യാപ്ചർ ചെയ്യുക',
+  homePacsAssistance: 'PACS സഹായം',
+  homePacsAssistanceDesc: 'വ്യക്തിഗത സഹായം നേടുക',
+  homeFarmerFriendly: 'കർഷക സൗഹൃദം',
+  homeTrustedInfo: 'വിശ്വസനീയ വിവരം',
+  homeBrighterTomorrow: 'ഉജ്ജ്വല നാളേക്ക്',
+  homeCoopFooter: 'ശക്തമായ സഹകരണം, ഉജ്ജ്വല ഭാരതം',
 };
 
 const pa: KioskStrings = {
@@ -901,6 +1062,22 @@ const pa: KioskStrings = {
   printDone: "ਸਮਾਪਤ",
   printTryAgain: "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
   printKeepingSlipNotice: "ਕਿਰਪਾ ਕਰਕੇ ਹਵਾਲੇ ਲਈ ਇਹ ਪਰਚੀ ਰੱਖੋ।",
+  homeGreeting: 'ਸਤ ਸ੍ਰੀ ਅਕਾਲ!',
+  homeSubGreeting: 'ਅੱਜ ਮੈਂ ਤੁਹਾਡੀ ਕਿਵੇਂ ਮਦਦ ਕਰ ਸਕਦਾ ਹਾਂ?',
+  homeQuote: 'ਤੁਹਾਡੇ ਸਵਾਲ, ਸਾਡੇ ਹੱਲ',
+  homeTapToSpeak: 'ਬੋਲਣ ਲਈ ਟੈਪ ਕਰੋ',
+  homeAskByVoice: 'ਆਵਾਜ਼ ਨਾਲ ਪੁੱਛੋ',
+  homeAskByVoiceDesc: 'ਆਪਣਾ ਸਵਾਲ ਬੋਲੋ',
+  homeTypeQuestion: 'ਸਵਾਲ ਟਾਈਪ ਕਰੋ',
+  homeTypeQuestionDesc: 'ਟਾਈਪ ਕਰਕੇ ਪੁੱਛੋ',
+  homeScanDocument: 'ਦਸਤਾਵੇਜ਼ ਸਕੈਨ ਕਰੋ',
+  homeScanDocumentDesc: 'ਅਪਲੋਡ ਜਾਂ ਕੈਪਚਰ ਕਰੋ',
+  homePacsAssistance: 'PACS ਸਹਾਇਤਾ',
+  homePacsAssistanceDesc: 'ਨਿੱਜੀ ਸਹਾਇਤਾ ਪ੍ਰਾਪਤ ਕਰੋ',
+  homeFarmerFriendly: 'ਕਿਸਾਨ ਹਿਤੈਸ਼ੀ',
+  homeTrustedInfo: 'ਭਰੋਸੇਯੋਗ ਜਾਣਕਾਰੀ',
+  homeBrighterTomorrow: 'ਬਿਹਤਰ ਕੱਲ੍ਹ ਲਈ',
+  homeCoopFooter: 'ਮਜ਼ਬੂਤ ਸਹਿਕਾਰਤਾ, ਚਮਕਦਾਰ ਭਾਰਤ',
 };
 
 const or: KioskStrings = {
@@ -982,6 +1159,22 @@ const or: KioskStrings = {
   printDone: "ସମ୍ପନ୍ନ",
   printTryAgain: "ପୁନର୍ବାର ଚେଷ୍ଟା କରନ୍ତୁ",
   printKeepingSlipNotice: "ଦୟାକରି ରେଫରେନ୍ସ ପାଇଁ ଏହି ରସିଦ ରଖନ୍ତୁ।",
+  homeGreeting: 'ନମସ୍କାର!',
+  homeSubGreeting: 'ଆଜି ମୁଁ ଆପଣଙ୍କୁ କିପରି ସାହାଯ୍ୟ କରିପାରିବି?',
+  homeQuote: 'ଆପଣଙ୍କ ପ୍ରଶ୍ନ, ଆମର ସମାଧାନ',
+  homeTapToSpeak: 'କହିବାକୁ ଟ୍ୟାପ୍ କରନ୍ତୁ',
+  homeAskByVoice: 'ସ୍ୱରରେ ପଚାରନ୍ତୁ',
+  homeAskByVoiceDesc: 'ଆପଣଙ୍କ ପ୍ରଶ୍ନ କୁହନ୍ତୁ',
+  homeTypeQuestion: 'ପ୍ରଶ୍ନ ଟାଇପ୍ କରନ୍ତୁ',
+  homeTypeQuestionDesc: 'ଟାଇପ୍ କରି ପଚାରନ୍ତୁ',
+  homeScanDocument: 'ଡକୁମେଣ୍ଟ ସ୍କାନ୍ କରନ୍ତୁ',
+  homeScanDocumentDesc: 'ଅପଲୋଡ୍ କିମ୍ବା କ୍ୟାପଚର କରନ୍ତୁ',
+  homePacsAssistance: 'PACS ସହାୟତା',
+  homePacsAssistanceDesc: 'ବ୍ୟକ୍ତିଗତ ସହାୟତା ପାଆନ୍ତୁ',
+  homeFarmerFriendly: 'କୃଷକ ବନ୍ଧୁ',
+  homeTrustedInfo: 'ବିଶ୍ୱସନୀୟ ତଥ୍ୟ',
+  homeBrighterTomorrow: 'ଉଜ୍ଜ୍ୱଳ ଆସନ୍ତାକାଲ ପାଇଁ',
+  homeCoopFooter: 'ଶକ୍ତିଶାଳୀ ସମବାୟ, ଉଜ୍ଜ୍ୱଳ ଭାରତ',
 };
 
 const as: KioskStrings = {
@@ -1063,6 +1256,22 @@ const as: KioskStrings = {
   printDone: "সম্পূৰ্ণ",
   printTryAgain: "পুনৰ চেষ্টা কৰক",
   printKeepingSlipNotice: "অনুগ্ৰহ কৰি প্ৰসংগৰ বাবে এই ৰছিদখন ৰাখক।",
+  homeGreeting: 'নমস্কাৰ!',
+  homeSubGreeting: 'আজি মই আপোনাক কেনেকৈ সহায় কৰিব পাৰোঁ?',
+  homeQuote: 'আপোনাৰ প্ৰশ্ন, আমাৰ সমাধান',
+  homeTapToSpeak: 'কʼবলৈ টেপ কৰক',
+  homeAskByVoice: 'মাতেৰে সুধক',
+  homeAskByVoiceDesc: 'আপোনাৰ প্ৰশ্ন কওক',
+  homeTypeQuestion: 'প্ৰশ্ন টাইপ কৰক',
+  homeTypeQuestionDesc: 'টাইপ কৰি সুধক',
+  homeScanDocument: 'নথি স্কেন কৰক',
+  homeScanDocumentDesc: 'আপলোড বা কেপচাৰ কৰক',
+  homePacsAssistance: 'PACS সহায়তা',
+  homePacsAssistanceDesc: 'ব্যক্তিগত সহায় লাভ কৰক',
+  homeFarmerFriendly: 'কৃষক বন্ধু',
+  homeTrustedInfo: 'বিশ্বাসযোগ্য তথ্য',
+  homeBrighterTomorrow: 'উজ্জ্বল আগামীৰ বাবে',
+  homeCoopFooter: 'শক্তিশালী সমবায়, উজ্জ্বল ভাৰত',
 };
 
 const ur: KioskStrings = {
@@ -1144,6 +1353,22 @@ const ur: KioskStrings = {
   printDone: "مکمل",
   printTryAgain: "دوبارہ کوشش کریں",
   printKeepingSlipNotice: "براہ کرم حوالہ کے لیے یہ پرچی اپنے پاس رکھیں۔",
+  homeGreeting: 'نمستے!',
+  homeSubGreeting: 'آج میں آپ کی کیسے مدد کر سکتا ہوں؟',
+  homeQuote: 'آپ کے سوالات، ہمارے حل',
+  homeTapToSpeak: 'بولنے کے لیے ٹیپ کریں',
+  homeAskByVoice: 'آواز سے پوچھیں',
+  homeAskByVoiceDesc: 'اپنا سوال بولیں',
+  homeTypeQuestion: 'سوال ٹائپ کریں',
+  homeTypeQuestionDesc: 'ٹائپ کر کے پوچھیں',
+  homeScanDocument: 'دستاویز اسکین کریں',
+  homeScanDocumentDesc: 'اپلوڈ یا کیپچر کریں',
+  homePacsAssistance: 'PACS مدد',
+  homePacsAssistanceDesc: 'ذاتی مدد حاصل کریں',
+  homeFarmerFriendly: 'کسان دوست',
+  homeTrustedInfo: 'قابل اعتماد معلومات',
+  homeBrighterTomorrow: 'روشن کل کے لیے',
+  homeCoopFooter: 'مضبوط تعاون، روشن بھارت',
 };
 
 const sa: KioskStrings = {
@@ -1225,6 +1450,22 @@ const sa: KioskStrings = {
   printDone: "सम्पन्नम्",
   printTryAgain: "पुनः प्रयतताम्",
   printKeepingSlipNotice: "कृपया सन्दर्भार्थम् इदं पत्रं स्थापयन्तु।",
+  homeGreeting: 'नमस्ते!',
+  homeSubGreeting: 'अद्य अहं भवतां कथं साहाय्यं कर्तुं शक्नोमि?',
+  homeQuote: 'भवतां प्रश्नाः, अस्माकं समाधानानि',
+  homeTapToSpeak: 'वक्तुं स्पृशतु',
+  homeAskByVoice: 'वाचा पृच्छतु',
+  homeAskByVoiceDesc: 'स्वप्रश्नं वदतु',
+  homeTypeQuestion: 'प्रश्नं लिखतु',
+  homeTypeQuestionDesc: 'लिखित्वा पृच्छतु',
+  homeScanDocument: 'प्रलेखं स्कैन करोतु',
+  homeScanDocumentDesc: 'अपलोड अथवा ग्रहणं करोतु',
+  homePacsAssistance: 'PACS साहाय्यम्',
+  homePacsAssistanceDesc: 'व्यक्तिगतं साहाय्यं प्राप्नोतु',
+  homeFarmerFriendly: 'कृषकमित्रम्',
+  homeTrustedInfo: 'विश्वसनीया सूचना',
+  homeBrighterTomorrow: 'उज्ज्वलश्वः कृते',
+  homeCoopFooter: 'सबला सहकारिताः, उज्ज्वलं भारतम्',
 };
 
 const ks: KioskStrings = {
@@ -1306,6 +1547,22 @@ const ks: KioskStrings = {
   printDone: "मुकम्मल",
   printTryAgain: "दोबारा करिव कोशिश",
   printKeepingSlipNotice: "मेहरबानी करित थविव ये पर्चि पनिनिस निश।",
+  homeGreeting: 'آداب!',
+  homeSubGreeting: 'اَز ہم تُہنز کیتھ مدد کٔرِتھ ہیکِو؟',
+  homeQuote: 'تُہنز سوال، سانٛیٖ جواب',
+  homeTapToSpeak: 'بولنَس ٹیپ کرِو',
+  homeAskByVoice: 'آواز سٕتۍ پٔژھِو',
+  homeAskByVoiceDesc: 'پنُن سوال بولِو',
+  homeTypeQuestion: 'سوال ٹایپ کرِو',
+  homeTypeQuestionDesc: 'ٹایپ کٔرِتھ پٔژھِو',
+  homeScanDocument: 'دستاویز اسکین کرِو',
+  homeScanDocumentDesc: 'اپلوڈ یا کیپچر کرِو',
+  homePacsAssistance: 'PACS مدد',
+  homePacsAssistanceDesc: 'ذاتی مدد حاصل کرِو',
+  homeFarmerFriendly: 'کِسان دوست',
+  homeTrustedInfo: 'معتبر معلومات',
+  homeBrighterTomorrow: 'روشن پگاہ خاطرٕ',
+  homeCoopFooter: 'مضبوط تعاون، روشن بھارت',
 };
 
 const kok: KioskStrings = {
@@ -1387,6 +1644,22 @@ const kok: KioskStrings = {
   printDone: "जालें",
   printTryAgain: "परत प्रयत्न करात",
   printKeepingSlipNotice: "उपकार करून संदर्भाखातीर ही पावती दवरात.",
+  homeGreeting: 'नमस्कार!',
+  homeSubGreeting: 'आयज हांव तुमकां कशी मदत करूं येता?',
+  homeQuote: 'तुमचे प्रस्न, आमचे उपाय',
+  homeTapToSpeak: 'उलोवपाक टॅप करात',
+  homeAskByVoice: 'आवाजान विचारात',
+  homeAskByVoiceDesc: 'तुमचो प्रस्न सांगात',
+  homeTypeQuestion: 'प्रस्न टायप करात',
+  homeTypeQuestionDesc: 'टायप करून विचारात',
+  homeScanDocument: 'दस्तावेज स्कॅन करात',
+  homeScanDocumentDesc: 'अपलोड वा कॅप्चर करात',
+  homePacsAssistance: 'PACS मदत',
+  homePacsAssistanceDesc: 'वैयक्तीक मदत मेळयात',
+  homeFarmerFriendly: 'शेतकरी मित्र',
+  homeTrustedInfo: 'विस्वासू म्हायती',
+  homeBrighterTomorrow: 'उज्ज्वल फाल्याखातीर',
+  homeCoopFooter: 'बळिश्ट सहकार, उज्ज्वल भारत',
 };
 
 const mai: KioskStrings = {
@@ -1468,6 +1741,22 @@ const mai: KioskStrings = {
   printDone: "सम्पन्न",
   printTryAgain: "पुनः प्रयास करू",
   printKeepingSlipNotice: "कृपया संदर्भक लेल ई पर्ची राखू।",
+  homeGreeting: 'प्रणाम!',
+  homeSubGreeting: 'आइ हम अहाँक कोना मदद कऽ सकैत छी?',
+  homeQuote: 'अहाँक प्रश्न, हमर समाधान',
+  homeTapToSpeak: 'बाजबाक लेल टैप करू',
+  homeAskByVoice: 'आवाजसँ पुछू',
+  homeAskByVoiceDesc: 'अपन प्रश्न कहू',
+  homeTypeQuestion: 'प्रश्न टाइप करू',
+  homeTypeQuestionDesc: 'टाइप कऽ कऽ पुछू',
+  homeScanDocument: 'कागजात स्कैन करू',
+  homeScanDocumentDesc: 'अपलोड वा कैप्चर करू',
+  homePacsAssistance: 'PACS सहायता',
+  homePacsAssistanceDesc: 'व्यक्तिगत मदद प्राप्त करू',
+  homeFarmerFriendly: 'किसान मित्र',
+  homeTrustedInfo: 'भरोसेमंद जानकारी',
+  homeBrighterTomorrow: 'उज्ज्वल काल्हि लेल',
+  homeCoopFooter: 'मजगूत सहकारिता, उज्ज्वल भारत',
 };
 
 const mni: KioskStrings = {
@@ -1549,6 +1838,22 @@ const mni: KioskStrings = {
   printDone: "লোইরে",
   printTryAgain: "অমুক হন্না হোৎনবীয়ু",
   printKeepingSlipNotice: "চানবীদুনা চে অসি তুংশিন্দুনা থম্বীয়ু।",
+  homeGreeting: 'খুরুমজরি!',
+  homeSubGreeting: 'ঐং নহাক্কী মতেংদা করম্না মতেং পাংবা ঙমগনি?',
+  homeQuote: 'নহাক্কী ৱাহং, ঐখোয়গী পাওখুম',
+  homeTapToSpeak: 'ৱা ঙাংবা থংগৎলু',
+  homeAskByVoice: 'খোল্লগা হংবিয়ু',
+  homeAskByVoiceDesc: 'নহাক্কী ৱাহং ঙাংবিয়ু',
+  homeTypeQuestion: 'ৱাহং টাইপ তৌবিয়ু',
+  homeTypeQuestionDesc: 'টাইপ তৌদুনা হংবিয়ু',
+  homeScanDocument: 'ডোকুমেন্ট স্ক্যান তৌবিয়ু',
+  homeScanDocumentDesc: 'অপলোদ নত্রগা ক্যাপচার তৌবিয়ু',
+  homePacsAssistance: 'PACS মতেং',
+  homePacsAssistanceDesc: 'মীওই মতেং ফংবিয়ু',
+  homeFarmerFriendly: 'লৌমীশিংগী মরূপ',
+  homeTrustedInfo: 'থাজবযোগ্য ইনফোর্মেসন',
+  homeBrighterTomorrow: 'অশোইবা হয়েংগী অথিংবা',
+  homeCoopFooter: 'চাংবা কো-অপরেটিভ, অশোইবা ভারত',
 };
 
 const ne: KioskStrings = {
@@ -1630,6 +1935,22 @@ const ne: KioskStrings = {
   printDone: "सम्पन्न",
   printTryAgain: "फेरि प्रयास गर्नुहोस्",
   printKeepingSlipNotice: "कृपया सन्दर्भका लागि यो रसिद राख्नुहोस्।",
+  homeGreeting: 'नमस्ते!',
+  homeSubGreeting: 'आज म तपाईंलाई कसरी मद्दत गर्न सक्छु?',
+  homeQuote: 'तपाईंका प्रश्नहरू, हाम्रा समाधानहरू',
+  homeTapToSpeak: 'बोल्न ट्याप गर्नुहोस्',
+  homeAskByVoice: 'आवाजले सोध्नुहोस्',
+  homeAskByVoiceDesc: 'आफ्नो प्रश्न भन्नुहोस्',
+  homeTypeQuestion: 'प्रश्न टाइप गर्नुहोस्',
+  homeTypeQuestionDesc: 'टाइप गरेर सोध्नुहोस्',
+  homeScanDocument: 'कागजात स्क्यान गर्नुहोस्',
+  homeScanDocumentDesc: 'अपलोड वा क्याप्चर गर्नुहोस्',
+  homePacsAssistance: 'PACS सहायता',
+  homePacsAssistanceDesc: 'व्यक्तिगत सहायता पाउनुहोस्',
+  homeFarmerFriendly: 'किसान मैत्रीपूर्ण',
+  homeTrustedInfo: 'भरपर्दो जानकारी',
+  homeBrighterTomorrow: 'उज्ज्वल भोलिका लागि',
+  homeCoopFooter: 'बलियो सहकारी, उज्ज्वल भारत',
 };
 
 const brx: KioskStrings = {
@@ -1711,6 +2032,22 @@ const brx: KioskStrings = {
   printDone: "जोबबाय",
   printTryAgain: "फिन नाजाफिन",
   printKeepingSlipNotice: "अननानै बे बिलाइखौ लाखिना दोन।",
+  homeGreeting: 'नमस्ते!',
+  homeSubGreeting: 'दिनै आं नोंथांखौ मानो होनना मदद हो सिगां?',
+  homeQuote: 'नोंथांनि सोंनाय, जोंनि सोलोंथाय',
+  homeTapToSpeak: 'रायज्लायनो थांनानै हमदो',
+  homeAskByVoice: 'राव सिङाव सोंदो',
+  homeAskByVoiceDesc: 'नोंथांनि सोंनाय बुंदो',
+  homeTypeQuestion: 'सोंनाय टाइप खालामदो',
+  homeTypeQuestionDesc: 'टाइप खालामनानै सोंदो',
+  homeScanDocument: 'फोरमान स्कैन खालामदो',
+  homeScanDocumentDesc: 'अपलड नाथाय कैपचार खालामदो',
+  homePacsAssistance: 'PACS मदद',
+  homePacsAssistanceDesc: 'गावसे मदद मोन्दो',
+  homeFarmerFriendly: 'हालोदानि गोजोन',
+  homeTrustedInfo: 'बिथांखि बिसायख',
+  homeBrighterTomorrow: 'गोजोन सानफ्रोमबोनि थाखाय',
+  homeCoopFooter: 'गोबां सहकार, गोजोन भारत',
 };
 
 const sat: KioskStrings = {
@@ -1792,6 +2129,22 @@ const sat: KioskStrings = {
   printDone: "ᱦᱩᱭ ᱮᱱᱟ",
   printTryAgain: "ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩ ᱢᱮ",
   printKeepingSlipNotice: "ᱫᱟᱭᱟᱠᱟᱛᱮ ᱱᱚᱶᱟ ᱨᱟᱹᱥᱤᱫ ᱫᱚᱦᱚᱭ ᱢᱮ।",
+  homeGreeting: 'જોहार!',
+  homeSubGreeting: 'तिञाᱜ ᱟᱢ ᱡᱚᱛᱚ ᱞᱮᱠᱟ ᱜᱚᱜ ᱟᱢ ᱠᱚ ᱜᱚᱲᱚ ᱫᱟᱲᱮᱭᱟᱜ-ᱟ?',
+  homeQuote: 'ᱟᱢᱟᱜ ᱠᱟᱛᱷᱟ, ᱟᱞᱮᱭᱟᱜ ᱡᱟᱹᱣᱟᱹᱵ',
+  homeTapToSpeak: 'ᱨᱚᱲ ᱞᱟᱹᱜᱤᱫ ᱴᱮᱯ ᱢᱮ',
+  homeAskByVoice: 'ᱟᱣᱟᱡ ᱛᱮ ᱠᱩᱞᱤ ᱢᱮ',
+  homeAskByVoiceDesc: 'ᱟᱢᱟᱜ ᱠᱟᱛᱷᱟ ᱨᱚᱲ ᱢᱮ',
+  homeTypeQuestion: 'ᱠᱟᱛᱷᱟ ᱴᱟᱭᱤᱯ ᱢᱮ',
+  homeTypeQuestionDesc: 'ᱴᱟᱭᱤᱯ ᱛᱮ ᱠᱩᱞᱤ ᱢᱮ',
+  homeScanDocument: 'ᱫᱚᱞᱤᱞ ᱥᱠᱮᱱ ᱢᱮ',
+  homeScanDocumentDesc: 'ᱟᱯᱞᱳᱰ ᱟᱨ ᱠᱮᱯᱪᱟᱨ ᱢᱮ',
+  homePacsAssistance: 'PACS ᱜᱚᱲᱚ',
+  homePacsAssistanceDesc: 'ᱦᱚᱲ ᱜᱚᱲᱚ ᱧᱟᱢ ᱢᱮ',
+  homeFarmerFriendly: 'ᱪᱟᱥᱟ ᱮᱞᱟᱜ',
+  homeTrustedInfo: 'ᱵᱷᱚᱨᱥᱟ ᱡᱟᱱᱠᱟᱨᱤ',
+  homeBrighterTomorrow: 'ᱡᱷᱟᱞᱟᱜ ᱜᱟᱹᱦᱤᱨ ᱞᱟᱹᱜᱤᱫ',
+  homeCoopFooter: 'ᱡᱚᱨ ᱥᱟᱦᱟᱠᱟᱨ, ᱡᱷᱟᱞᱟᱜ ᱵᱷᱟᱨᱚᱛ',
 };
 
 const sd: KioskStrings = {
@@ -1873,6 +2226,22 @@ const sd: KioskStrings = {
   printDone: "مڪمل",
   printTryAgain: "وري ڪوشش ڪريو",
   printKeepingSlipNotice: "مهرباني ڪري حوالي لاءِ هي پرچي سنڀالي رکو.",
+  homeGreeting: 'نمستي!',
+  homeSubGreeting: 'اڄ مان توهان جي ڪيئن مدد ڪري سگهان ٿو؟',
+  homeQuote: 'توهان جا سوال، اسان جا حل',
+  homeTapToSpeak: 'ڳالهائڻ لاءِ ٽيپ ڪريو',
+  homeAskByVoice: 'آواز سان پڇو',
+  homeAskByVoiceDesc: 'پنهنجو سوال ڳالهايو',
+  homeTypeQuestion: 'سوال ٽائيپ ڪريو',
+  homeTypeQuestionDesc: 'ٽائيپ ڪري پڇو',
+  homeScanDocument: 'دستاويز اسڪين ڪريو',
+  homeScanDocumentDesc: 'اپلوڊ يا ڪيپچر ڪريو',
+  homePacsAssistance: 'PACS مدد',
+  homePacsAssistanceDesc: 'ذاتي مدد حاصل ڪريو',
+  homeFarmerFriendly: 'هاري دوست',
+  homeTrustedInfo: 'ڀروسي واري ڄاڻ',
+  homeBrighterTomorrow: 'روشن سڀاڻي لاءِ',
+  homeCoopFooter: 'مضبوط تعاون، روشن ڀارت',
 };
 
 /** Complete translation map for all 22 languages in the Citizen UI. */

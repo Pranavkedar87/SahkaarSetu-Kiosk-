@@ -1,0 +1,101 @@
+/**
+ * HomeAnimations.css
+ *
+ * K9 — Kiosk Home Screen animations.
+ * All animations use transform/opacity only (GPU-accelerated).
+ * Respects prefers-reduced-motion.
+ */
+
+/* ── Entry Animations ────────────────────────────────────────────────────────── */
+
+@keyframes homeHeroFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes homeFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes homeCardStagger {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Microphone Animations ───────────────────────────────────────────────────── */
+
+@keyframes homeMicGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(21, 128, 61, 0.3), 0 8px 32px rgba(21, 128, 61, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(21, 128, 61, 0.5), 0 8px 48px rgba(21, 128, 61, 0.35);
+  }
+}
+
+@keyframes homeMicRipple {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* ── Background & Parallax ───────────────────────────────────────────────────── */
+
+@keyframes homeSubtleShift {
+  0%, 100% {
+    background-position: 50% 50%;
+  }
+  50% {
+    background-position: 52% 48%;
+  }
+}
+
+/* ── Info Strip Shimmer ──────────────────────────────────────────────────────── */
+
+@keyframes homeShimmer {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+/* ── Reduced Motion ──────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -112,4 +112,67 @@ describe('HomeScreen', () => {
     expect(screen.queryByText(/\bdashboard\b/i)).toBeNull();
     expect(screen.queryByText(/\badmin\b/i)).toBeNull();
   });
+
+  // ── K9 Redesign Tests ──────────────────────────────────────────────────────
+  it('renders welcome greeting card with Namaste and sub-greeting', () => {
+    render(<HomeScreen {...DEFAULT_PROPS} />);
+    expect(screen.getByText(strings.homeGreeting)).toBeInTheDocument();
+    expect(screen.getByText(strings.homeSubGreeting)).toBeInTheDocument();
+  });
+
+  it('renders live clock time and date display', () => {
+    render(<HomeScreen {...DEFAULT_PROPS} />);
+    expect(screen.getByTestId('clock-time')).toBeInTheDocument();
+    expect(screen.getByTestId('clock-date')).toBeInTheDocument();
+  });
+
+  it('renders connectivity indicator with online status', () => {
+    render(<HomeScreen {...DEFAULT_PROPS} />);
+    const indicator = screen.getByTestId('connectivity-indicator');
+    expect(indicator).toBeInTheDocument();
+    expect(indicator).toHaveAttribute('title', 'Online');
+  });
+
+  it('renders bottom info strip with farmer-friendly badges', () => {
+    render(<HomeScreen {...DEFAULT_PROPS} />);
+    expect(screen.getByText(strings.homeFarmerFriendly)).toBeInTheDocument();
+    expect(screen.getByText(strings.homeTrustedInfo)).toBeInTheDocument();
+    expect(screen.getByText(strings.homeBrighterTomorrow)).toBeInTheDocument();
+  });
+
+  it('renders cooperative-themed quote and footer', () => {
+    render(<HomeScreen {...DEFAULT_PROPS} />);
+    expect(screen.getByText(strings.homeQuote)).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(strings.homeCoopFooter, 'i'))).toBeInTheDocument();
+  });
+
+  it('calls onSpeak when Ask by Voice card is clicked', () => {
+    const onSpeak = vi.fn();
+    render(<HomeScreen {...DEFAULT_PROPS} onSpeak={onSpeak} />);
+    const voiceCard = screen.getByRole('button', { name: new RegExp(strings.homeAskByVoice, 'i') });
+    fireEvent.click(voiceCard);
+    expect(onSpeak).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls onPacsHelp when PACS card is clicked', () => {
+    const onPacsHelp = vi.fn();
+    render(<HomeScreen {...DEFAULT_PROPS} onPacsHelp={onPacsHelp} />);
+    const pacsCard = screen.getByRole('button', { name: new RegExp(strings.homePacsAssistance, 'i') });
+    fireEvent.click(pacsCard);
+    expect(onPacsHelp).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls onChangeLanguage when language button is clicked', () => {
+    const onChangeLanguage = vi.fn();
+    render(<HomeScreen {...DEFAULT_PROPS} onChangeLanguage={onChangeLanguage} />);
+    fireEvent.click(screen.getByRole('button', { name: strings.changeLanguage }));
+    expect(onChangeLanguage).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls onStartOver when start over button is clicked', () => {
+    const onStartOver = vi.fn();
+    render(<HomeScreen {...DEFAULT_PROPS} onStartOver={onStartOver} />);
+    fireEvent.click(screen.getByRole('button', { name: strings.promptStartOver }));
+    expect(onStartOver).toHaveBeenCalledTimes(1);
+  });
 });
