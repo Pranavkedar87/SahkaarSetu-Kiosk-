@@ -1,14 +1,16 @@
 /**
- * HomeScreen — K9 Visual Polish
+ * HomeScreen — K9 Interactive Animated Assistant
  *
- * Full-fidelity AI-assisted rural cooperative kiosk interface.
- * Matches the approved reference visual composition:
- *   Left (54–56%): Full-height rural Maharashtra assistant backdrop,
- *                  translucent glass welcome card ("Namaste!"),
+ * Full-fidelity AI-assisted rural cooperative kiosk interface featuring the
+ * interactive animated SahkaarSetu virtual assistant character.
+ *
+ * Visual composition:
+ *   Left (54–56%): Rural Maharashtra backdrop with the animated SahkaarSetu
+ *                  Virtual Assistant character, interactive speech bubble, and
  *                  large glowing circular microphone CTA (~190px).
  *   Right (44–46%): "How can we help you?", 2x2 prominent action cards
- *                   (Voice, Type, Scan, PACS) with glassmorphism,
- *                   rich typography, and large touch targets.
+ *                   (Voice, Type, Scan, PACS) with glassmorphism, rich
+ *                   typography, and large touch targets.
  *   Bottom: Cooperative green/saffron decorative wave with 3 trust badges.
  *
  * All K4/K5/K6/K7 capabilities preserved.
@@ -17,6 +19,7 @@
 import React, { useState, useEffect } from 'react';
 import { ServiceUnavailableBanner } from '../components/kiosk/ServiceUnavailableBanner';
 import { AssistanceSlip } from '../components/kiosk/AssistanceSlip';
+import { SahkaarSetuAssistant, type AssistantState } from '../components/kiosk/SahkaarSetuAssistant';
 import { getActivePrintSlip, subscribeActivePrintSlip } from '../services/printer';
 import type { PrintPayload } from '../types';
 import type { KioskStrings } from '../i18n';
@@ -27,7 +30,7 @@ import '../styles/HomeAnimations.css';
 
 // ── Props ──────────────────────────────────────────────────────────────────────
 
-interface Props {
+export interface HomeScreenProps {
   strings: KioskStrings;
   serviceAvailable: boolean;
   speakState?: SpeakButtonState;
@@ -37,6 +40,10 @@ interface Props {
   onPacsHelp: () => void;
   onChangeLanguage: () => void;
   onStartOver: () => void;
+  assistantState?: AssistantState;
+  mouthOpen?: number;
+  speechText?: string;
+  userTranscript?: string;
 }
 
 // ── Action card config ──────────────────────────────────────────────────────────
@@ -87,11 +94,26 @@ export function HomeScreen({
   onPacsHelp,
   onChangeLanguage,
   onStartOver,
-}: Props) {
+  assistantState,
+  mouthOpen = 0,
+  speechText,
+  userTranscript,
+}: HomeScreenProps) {
   const width = useWindowWidth();
   const now = useClock();
   const isWide = width >= 1024;
   const isCompact = width <= 820;
+
+  // Determine active character state (maps speakState if provided)
+  const resolvedState: AssistantState =
+    assistantState ||
+    (speakState === 'listening'
+      ? 'listening'
+      : speakState === 'processing'
+      ? 'thinking'
+      : speakState === 'error'
+      ? 'error'
+      : 'idle');
 
   // Print slip state
   const [activeSlip, setActiveSlip] = useState<PrintPayload | null>(getActivePrintSlip);
@@ -324,7 +346,7 @@ export function HomeScreen({
           position: 'relative',
         }}
       >
-        {/* ── Left Hero Panel (54–56% width): Real Assistant Image + Welcome + Mic ── */}
+        {/* ── Left Hero Panel (54–56% width): Animated Assistant + Mic ── */}
         <div
           style={{
             flex: isWide ? '0 0 54%' : '0 0 auto',
@@ -332,10 +354,10 @@ export function HomeScreen({
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            padding: isWide ? '24px 32px' : '16px 20px',
+            justifyContent: 'space-between',
+            padding: isWide ? '16px 28px 18px' : '12px 16px',
             overflow: 'hidden',
-            minHeight: isWide ? 'auto' : '320px',
+            minHeight: isWide ? 'auto' : '360px',
           }}
         >
           {/* Rural Maharashtra Hero Assistant Background Image */}
@@ -351,6 +373,7 @@ export function HomeScreen({
               objectFit: 'cover',
               objectPosition: 'center 22%',
               zIndex: 0,
+              opacity: 0.85,
               animation: 'homeHeroImageScale 1.2s ease-out both',
             }}
           />
@@ -365,56 +388,25 @@ export function HomeScreen({
               width: '100%',
               height: '100%',
               background: isWide
-                ? 'linear-gradient(to right, rgba(0,0,0,0.12) 0%, rgba(240,253,244,0.10) 45%, rgba(240,253,244,0.85) 90%, #f0fdf4 100%)'
-                : 'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(240,253,244,0.7) 70%, #f0fdf4 100%)',
+                ? 'linear-gradient(to right, rgba(0,0,0,0.10) 0%, rgba(240,253,244,0.15) 45%, rgba(240,253,244,0.88) 90%, #f0fdf4 100%)'
+                : 'linear-gradient(to bottom, rgba(0,0,0,0.10) 0%, rgba(240,253,244,0.7) 70%, #f0fdf4 100%)',
               zIndex: 1,
               pointerEvents: 'none',
             }}
           />
 
-          {/* Welcome Card — Translucent Glass */}
-          <div
-            style={{
-              position: 'relative',
-              zIndex: 2,
-              background: 'rgba(255, 255, 255, 0.88)',
-              backdropFilter: 'blur(18px)',
-              WebkitBackdropFilter: 'blur(18px)',
-              borderRadius: '26px',
-              border: '1.5px solid rgba(255, 255, 255, 0.95)',
-              padding: isWide ? '20px 32px' : '14px 22px',
-              textAlign: 'center',
-              boxShadow: '0 12px 36px rgba(0,0,0,0.10)',
-              marginBottom: isWide ? '22px' : '12px',
-              animation: 'homeFadeInUp 0.6s ease-out 0.2s both',
-              maxWidth: isWide ? '400px' : '340px',
-              width: '100%',
-            }}
-          >
-            <div
-              style={{
-                fontSize: isWide ? '34px' : '26px',
-                fontWeight: 800,
-                color: '#15803d',
-                marginBottom: '4px',
-                letterSpacing: '-0.5px',
-              }}
-            >
-              {strings.homeGreeting || 'Namaste!'}
-            </div>
-            <div
-              style={{
-                fontSize: isWide ? '18px' : '15px',
-                fontWeight: 600,
-                color: '#1e293b',
-                lineHeight: 1.35,
-              }}
-            >
-              {strings.homeSubGreeting || 'How can I help you today?'}
-            </div>
+          {/* ── Interactive Animated SahkaarSetu Virtual Assistant Character ── */}
+          <div style={{ position: 'relative', zIndex: 2, width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <SahkaarSetuAssistant
+              state={resolvedState}
+              mouthOpen={mouthOpen}
+              strings={strings}
+              speechText={speechText}
+              userTranscript={userTranscript}
+            />
           </div>
 
-          {/* Central Microphone CTA Button (~190px on 1280x800) */}
+          {/* Central Microphone CTA Button (~186px on 1280x800) */}
           <div
             style={{
               position: 'relative',
@@ -423,7 +415,7 @@ export function HomeScreen({
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              animation: 'homeFadeInUp 0.6s ease-out 0.35s both',
+              marginTop: '4px',
             }}
           >
             {/* Animated Ripple Wave */}
@@ -431,8 +423,8 @@ export function HomeScreen({
               aria-hidden="true"
               style={{
                 position: 'absolute',
-                width: isWide ? '210px' : '160px',
-                height: isWide ? '210px' : '160px',
+                width: isWide ? '190px' : '150px',
+                height: isWide ? '190px' : '150px',
                 borderRadius: '50%',
                 border: '3px solid rgba(34, 197, 94, 0.35)',
                 animation: 'homeMicRipple 2.2s ease-out infinite',
@@ -447,22 +439,27 @@ export function HomeScreen({
               style={{
                 position: 'relative',
                 zIndex: 2,
-                width: isWide ? '186px' : '142px',
-                height: isWide ? '186px' : '142px',
-                minHeight: isWide ? '186px' : '142px',
+                width: isWide ? '160px' : '130px',
+                height: isWide ? '160px' : '130px',
+                minHeight: isWide ? '160px' : '130px',
                 borderRadius: '50%',
-                background: 'linear-gradient(145deg, #22c55e 0%, #15803d 100%)',
-                border: '6px solid rgba(255, 255, 255, 0.95)',
+                background:
+                  resolvedState === 'listening'
+                    ? 'linear-gradient(145deg, #10b981 0%, #047857 100%)'
+                    : resolvedState === 'thinking'
+                    ? 'linear-gradient(145deg, #0284c7 0%, #0369a1 100%)'
+                    : 'linear-gradient(145deg, #22c55e 0%, #15803d 100%)',
+                border: '5px solid rgba(255, 255, 255, 0.95)',
                 color: '#ffffff',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '6px',
+                gap: '4px',
                 cursor: 'pointer',
                 boxShadow: '0 0 35px rgba(34, 197, 94, 0.5), 0 16px 40px rgba(21, 128, 61, 0.35)',
                 animation: 'homeMicGlow 3s ease-in-out infinite, homeMicBreathe 4s ease-in-out infinite',
-                transition: 'transform 0.15s ease',
+                transition: 'transform 0.15s ease, background 0.3s ease',
                 touchAction: 'manipulation',
                 userSelect: 'none',
                 WebkitTapHighlightColor: 'transparent',
@@ -470,37 +467,41 @@ export function HomeScreen({
             >
               <span
                 style={{
-                  fontSize: isWide ? '52px' : '40px',
+                  fontSize: isWide ? '46px' : '36px',
                   lineHeight: 1,
                   filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
                 }}
                 aria-hidden="true"
               >
-                🎤
+                {resolvedState === 'listening' ? '🎙️' : resolvedState === 'thinking' ? '⚙️' : '🎤'}
               </span>
               <span
                 style={{
-                  fontSize: isWide ? '19px' : '15px',
+                  fontSize: isWide ? '17px' : '14px',
                   fontWeight: 800,
                   textAlign: 'center',
                   letterSpacing: '0.3px',
                 }}
               >
-                {strings.actionSpeak}
+                {resolvedState === 'listening'
+                  ? strings.stateListening || 'Listening'
+                  : resolvedState === 'thinking'
+                  ? strings.stateProcessing || 'Processing'
+                  : strings.actionSpeak}
               </span>
             </button>
 
             {/* Tap to speak Glass Badge */}
             <div
               style={{
-                marginTop: '10px',
-                fontSize: isWide ? '16px' : '13px',
+                marginTop: '8px',
+                fontSize: isWide ? '15px' : '12px',
                 fontWeight: 700,
                 color: '#15803d',
                 background: 'rgba(255, 255, 255, 0.92)',
                 backdropFilter: 'blur(12px)',
                 WebkitBackdropFilter: 'blur(12px)',
-                padding: '6px 18px',
+                padding: '4px 16px',
                 borderRadius: '20px',
                 border: '1px solid rgba(21, 128, 61, 0.2)',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.06)',

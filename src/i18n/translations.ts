@@ -108,6 +108,14 @@ export interface KioskStrings {
   homeTrustedInfo: string;
   homeBrighterTomorrow: string;
   homeCoopFooter: string;
+  // ── Assistant Character Additions ───────────────────────────────────────────
+  assistantGreeting: string;
+  assistantListening: string;
+  assistantThinking: string;
+  assistantSpeaking: string;
+  assistantSuccess: string;
+  assistantError: string;
+  assistantYouSaid: string;
 }
 
 const en: KioskStrings = {
@@ -205,6 +213,13 @@ const en: KioskStrings = {
   homeTrustedInfo: 'Trusted Information',
   homeBrighterTomorrow: 'For a Stronger Tomorrow',
   homeCoopFooter: 'Stronger Cooperatives, A Brighter India',
+  assistantGreeting: 'Namaste! How can I help you today?',
+  assistantListening: 'Yes, I\'m listening...',
+  assistantThinking: 'Let me find that for you...',
+  assistantSpeaking: 'Here is what I found:',
+  assistantSuccess: 'I\'m ready to help whenever you need.',
+  assistantError: 'I could not understand that. Please try again.',
+  assistantYouSaid: 'You said:',
 };
 
 const hi: KioskStrings = {
@@ -302,6 +317,13 @@ const hi: KioskStrings = {
   homeTrustedInfo: 'विश्वसनीय जानकारी',
   homeBrighterTomorrow: 'बेहतर कल के लिए',
   homeCoopFooter: 'मज़बूत सहकारिताएँ, उज्ज्वल भारत',
+  assistantGreeting: 'नमस्ते! आज मैं आपकी कैसे मदद कर सकती हूँ?',
+  assistantListening: 'हाँ, मैं सुन रही हूँ...',
+  assistantThinking: 'मैं आपके लिए जानकारी ढूंढ रही हूँ...',
+  assistantSpeaking: 'यह जानकारी मुझे मिली है:',
+  assistantSuccess: 'आपकी सेवा में सदैव तत्पर हूँ।',
+  assistantError: 'मुझे समझ नहीं आया। कृपया दोबारा प्रयास करें।',
+  assistantYouSaid: 'आपने कहा:',
 };
 
 const mr: KioskStrings = {
@@ -399,6 +421,13 @@ const mr: KioskStrings = {
   homeTrustedInfo: 'विश्वासार्ह माहिती',
   homeBrighterTomorrow: 'उज्ज्वल उद्यासाठी',
   homeCoopFooter: 'सशक्त सहकार, उज्ज्वल भारत',
+  assistantGreeting: 'नमस्कार! आज मी तुम्हाला कशी मदत करू शकते?',
+  assistantListening: 'होय, मी ऐकत आहे...',
+  assistantThinking: 'मी तुमच्यासाठी माहिती शोधत आहे...',
+  assistantSpeaking: 'मला ही माहिती मिळाली आहे:',
+  assistantSuccess: 'तुमच्या सेवेसाठी मी सदैव तयार आहे.',
+  assistantError: 'मला समजले नाही. कृपया पुन्हा प्रयत्न करा.',
+  assistantYouSaid: 'तुम्ही म्हणालात:',
 };
 
 const gu: KioskStrings = {
@@ -496,6 +525,13 @@ const gu: KioskStrings = {
   homeTrustedInfo: 'વિશ્વસનીય માહિતી',
   homeBrighterTomorrow: 'ઉજ્જવળ આવતીકાલ માટે',
   homeCoopFooter: 'મજબૂત સહકારી, ઉજ્જવળ ભારત',
+  assistantGreeting: 'નમસ્તે! આજે હું તમને કેવી રીતે મદદ કરી શકું?',
+  assistantListening: 'હા, હું સાંભળી રહી છું...',
+  assistantThinking: 'હું તમારા માટે શોધી રહી છું...',
+  assistantSpeaking: 'આ માહિતી મને મળી છે:',
+  assistantSuccess: 'તમારી સેવામાં હંમેશા હાજર છું.',
+  assistantError: 'મને સમજાયું નહીં. કૃપા કરીને ફરી પ્રયાસ કરો.',
+  assistantYouSaid: 'તમે કહ્યું:',
 };
 
 const bn: KioskStrings = {
@@ -593,6 +629,13 @@ const bn: KioskStrings = {
   homeTrustedInfo: 'বিশ্বস্ত তথ্য',
   homeBrighterTomorrow: 'উজ্জ্বল আগামীর জন্য',
   homeCoopFooter: 'শক্তিশালী সমবায়, উজ্জ্বল ভারত',
+  assistantGreeting: 'নমস্কার! আজ আমি আপনাকে কীভাবে সাহায্য করতে পারি?',
+  assistantListening: 'হ্যাঁ, আমি শুনছি...',
+  assistantThinking: 'আমি আপনার জন্য খুঁজছি...',
+  assistantSpeaking: 'এখানে পাওয়া তথ্য:',
+  assistantSuccess: 'আপনার সেবায় সর্বদা প্রস্তুত।',
+  assistantError: 'আমি বুঝতে পারিনি। অনুগ্রহ করে আবার চেষ্টা করুন।',
+  assistantYouSaid: 'আপনি বলেছেন:',
 };
 
 const ta: KioskStrings = {
@@ -690,6 +733,13 @@ const ta: KioskStrings = {
   homeTrustedInfo: 'நம்பகமான தகவல்',
   homeBrighterTomorrow: 'ஒளிமயமான நாளைக்காக',
   homeCoopFooter: 'வலுவான கூட்டுறவு, ஒளிமயமான இந்தியா',
+  assistantGreeting: 'வணக்கம்! இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?',
+  assistantListening: 'ஆம், நான் கேட்கிறேன்...',
+  assistantThinking: 'உங்களுக்காக தகவலைத் தேடுகிறேன்...',
+  assistantSpeaking: 'கிடைத்த தகவல் இதோ:',
+  assistantSuccess: 'உங்களுக்கு உதவ எப்போதும் தயார்.',
+  assistantError: 'புரியவில்லை. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.',
+  assistantYouSaid: 'நீங்கள் கூறியது:',
 };
 
 const te: KioskStrings = {
@@ -787,6 +837,13 @@ const te: KioskStrings = {
   homeTrustedInfo: 'నమ్మకమైన సమాచారం',
   homeBrighterTomorrow: 'ఉజ్వల రేపటి కోసం',
   homeCoopFooter: 'బలమైన సహకారాలు, ఉజ్వల భారతదేశం',
+  assistantGreeting: 'నమస్కారం! ఈ రోజు నేను మీకు ఎలా సహాయపడగలను?',
+  assistantListening: 'అవును, నేను వింటున్నాను...',
+  assistantThinking: 'మీ కోసం సమాచారాన్ని వెతుకుతున్నాను...',
+  assistantSpeaking: 'లభించిన సమాచారం ఇది:',
+  assistantSuccess: 'మీ సహాయం కోసం ఎల్లప్పుడూ సిద్ధంగా ఉన్నాను.',
+  assistantError: 'అర్థం కాలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి.',
+  assistantYouSaid: 'మీరు అన్నది:',
 };
 
 const kn: KioskStrings = {
@@ -884,6 +941,13 @@ const kn: KioskStrings = {
   homeTrustedInfo: 'ವಿಶ್ವಾಸಾರ್ಹ ಮಾಹಿತಿ',
   homeBrighterTomorrow: 'ಉಜ್ವಲ ನಾಳೆಗಾಗಿ',
   homeCoopFooter: 'ಬಲಿಷ್ಠ ಸಹಕಾರಿಗಳು, ಉಜ್ವಲ ಭಾರತ',
+  assistantGreeting: 'ನಮಸ್ಕಾರ! ಇಂದು ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು?',
+  assistantListening: 'ಹೌದು, ನಾನು ಕೇಳುತ್ತಿದ್ದೇನೆ...',
+  assistantThinking: 'ನಿಮಗಾಗಿ ಹುಡುಕುತ್ತಿದ್ದೇನೆ...',
+  assistantSpeaking: 'ದೊರೆತ ಮಾಹಿತಿ ಇಲ್ಲಿದೆ:',
+  assistantSuccess: 'ನಿಮ್ಮ ಸೇವೆಗೆ ಸದಾ ಸಿದ್ಧ.',
+  assistantError: 'ಅರ್ಥವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.',
+  assistantYouSaid: 'ನೀವು ಹೇಳಿದ್ದು:',
 };
 
 const ml: KioskStrings = {
@@ -981,6 +1045,13 @@ const ml: KioskStrings = {
   homeTrustedInfo: 'വിശ്വസനീയ വിവരം',
   homeBrighterTomorrow: 'ഉജ്ജ്വല നാളേക്ക്',
   homeCoopFooter: 'ശക്തമായ സഹകരണം, ഉജ്ജ്വല ഭാരതം',
+  assistantGreeting: 'നമസ്കാരം! ഇന്ന് ഞാൻ നിങ്ങളെ എങ്ങനെ സഹായിക്കാം?',
+  assistantListening: 'അതെ, ഞാൻ കേൾക്കുന്നുണ്ട്...',
+  assistantThinking: 'നിങ്ങൾക്കായി വിവരങ്ങൾ തിരയുന്നു...',
+  assistantSpeaking: 'ലഭിച്ച വിവരം ഇതാ:',
+  assistantSuccess: 'സഹായത്തിനായി എപ്പോഴും തയ്യാറാണ്.',
+  assistantError: 'മനസ്സിലായില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക.',
+  assistantYouSaid: 'നിങ്ങൾ പറഞ്ഞത്:',
 };
 
 const pa: KioskStrings = {
@@ -1078,6 +1149,13 @@ const pa: KioskStrings = {
   homeTrustedInfo: 'ਭਰੋਸੇਯੋਗ ਜਾਣਕਾਰੀ',
   homeBrighterTomorrow: 'ਬਿਹਤਰ ਕੱਲ੍ਹ ਲਈ',
   homeCoopFooter: 'ਮਜ਼ਬੂਤ ਸਹਿਕਾਰਤਾ, ਚਮਕਦਾਰ ਭਾਰਤ',
+  assistantGreeting: 'ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਅੱਜ ਮੈਂ ਤੁਹਾਡੀ ਕਿਵੇਂ ਮਦਦ ਕਰ ਸਕਦੀ ਹਾਂ?',
+  assistantListening: 'ਹਾਂ ਜੀ, ਮੈਂ ਸੁਣ ਰਹੀ ਹਾਂ...',
+  assistantThinking: 'ਮੈਂ ਤੁਹਾਡੇ ਲਈ ਜਾਣਕਾਰੀ ਲੱਭ ਰਹੀ ਹਾਂ...',
+  assistantSpeaking: 'ਮੈਨੂੰ ਇਹ ਜਾਣਕਾਰੀ ਮਿਲੀ ਹੈ:',
+  assistantSuccess: 'ਤੁਹਾਡੀ ਸੇਵਾ ਲਈ ਹਮੇਸ਼ਾ ਤਿਆਰ।',
+  assistantError: 'ਮੈਨੂੰ ਸਮਝ ਨਹੀਂ ਆਇਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।',
+  assistantYouSaid: 'ਤੁਸੀਂ ਕਿਹਾ ਸੀ:',
 };
 
 const or: KioskStrings = {
@@ -1175,6 +1253,13 @@ const or: KioskStrings = {
   homeTrustedInfo: 'ବିଶ୍ୱସନୀୟ ତଥ୍ୟ',
   homeBrighterTomorrow: 'ଉଜ୍ଜ୍ୱଳ ଆସନ୍ତାକାଲ ପାଇଁ',
   homeCoopFooter: 'ଶକ୍ତିଶାଳୀ ସମବାୟ, ଉଜ୍ଜ୍ୱଳ ଭାରତ',
+  assistantGreeting: 'ନମସ୍କାର! ଆଜି ମୁଁ ଆପଣଙ୍କୁ କିପରି ସାହାଯ୍ୟ କରିପାରିବି?',
+  assistantListening: 'ହଁ, ମୁଁ ଶୁଣୁଛି...',
+  assistantThinking: 'ମୁଁ ଆପଣଙ୍କ ପାଇଁ ଖୋଜୁଛି...',
+  assistantSpeaking: 'ମିଳିଥିବା ସୂଚନା ଏଠାରେ ଅଛି:',
+  assistantSuccess: 'ଆପଣଙ୍କ ସେବା ପାଇଁ ସର୍ବଦା ପ୍ରସ୍ତୁତ।',
+  assistantError: 'ମୁଁ ବୁଝିପାରିଲି ନାହିଁ। ଦୟାକରି ପୁନର୍ବାର ଚେଷ୍ଟା କରନ୍ତୁ।',
+  assistantYouSaid: 'ଆପଣ କହିଲେ:',
 };
 
 const as: KioskStrings = {
@@ -1272,6 +1357,13 @@ const as: KioskStrings = {
   homeTrustedInfo: 'বিশ্বাসযোগ্য তথ্য',
   homeBrighterTomorrow: 'উজ্জ্বল আগামীৰ বাবে',
   homeCoopFooter: 'শক্তিশালী সমবায়, উজ্জ্বল ভাৰত',
+  assistantGreeting: 'নমস্কাৰ! আজি মই আপোনাক কেনেকৈ সহায় কৰিব পাৰোঁ?',
+  assistantListening: 'হয়, মই শুনি আছোঁ...',
+  assistantThinking: 'আপোনাৰ বাবে তথ্য বিচাৰি আছোঁ...',
+  assistantSpeaking: 'মই পোৱা তথ্যসমূহ:',
+  assistantSuccess: 'আপোনাৰ সেৱাত সদায় সাজু।',
+  assistantError: 'বুজিব নোৱাৰিলোঁ। অনুগ্ৰহ কৰি পুনৰ চেষ্টা কৰক।',
+  assistantYouSaid: 'আপুনি কৈছিল:',
 };
 
 const ur: KioskStrings = {
@@ -1369,6 +1461,13 @@ const ur: KioskStrings = {
   homeTrustedInfo: 'قابل اعتماد معلومات',
   homeBrighterTomorrow: 'روشن کل کے لیے',
   homeCoopFooter: 'مضبوط تعاون، روشن بھارت',
+  assistantGreeting: 'نمستے! آج میں آپ کی کیسے مدد کر سکتی ہوں؟',
+  assistantListening: 'جی ہاں، میں سن رہی ہوں...',
+  assistantThinking: 'میں آپ کے لیے تلاش کر رہی ہوں...',
+  assistantSpeaking: 'مجھے یہ معلومات ملی ہیں:',
+  assistantSuccess: 'آپ کی مدد کے لیے ہمیشہ حاضر ہوں۔',
+  assistantError: 'سمجھ نہیں آیا۔ براہ کرم دوبارہ کوشش کریں۔',
+  assistantYouSaid: 'آپ نے کہا:',
 };
 
 const sa: KioskStrings = {
@@ -1466,6 +1565,13 @@ const sa: KioskStrings = {
   homeTrustedInfo: 'विश्वसनीया सूचना',
   homeBrighterTomorrow: 'उज्ज्वलश्वः कृते',
   homeCoopFooter: 'सबला सहकारिताः, उज्ज्वलं भारतम्',
+  assistantGreeting: 'नमस्ते! अद्य अहं भवतां कथं साहाय्यं कर्तुं शक्नोमि?',
+  assistantListening: 'आम्, अहं शृणोमि...',
+  assistantThinking: 'अहं भवतां कृते अन्वेषणं करोमि...',
+  assistantSpeaking: 'एषा सूचना प्राप्ता:',
+  assistantSuccess: 'भवतां सेवायै सदा सिद्धा अस्मि।',
+  assistantError: 'न अवगतम्। कृपया पुनः प्रयतताम्।',
+  assistantYouSaid: 'भवद्भिः उक्तम्:',
 };
 
 const ks: KioskStrings = {
@@ -1563,6 +1669,13 @@ const ks: KioskStrings = {
   homeTrustedInfo: 'معتبر معلومات',
   homeBrighterTomorrow: 'روشن پگاہ خاطرٕ',
   homeCoopFooter: 'مضبوط تعاون، روشن بھارت',
+  assistantGreeting: 'آداب! اَز ہم تُہنز کیتھ مدد کٔرِتھ ہیکِو؟',
+  assistantListening: 'آہن، بۄ چھَس بوزان...',
+  assistantThinking: 'بۄ چھَس تُہندِ باگتھ ژھانٛڈان...',
+  assistantSpeaking: 'یہِ معلومات ملیو:',
+  assistantSuccess: 'تُہندِ مدد خاطرٕ ہمیش تیاٗر۔',
+  assistantError: 'سمجھ نہ آو۔ مہربٲنی کٔرِتھ دۆبارٕ کوشش کٔرِو۔',
+  assistantYouSaid: 'تۄہے وۆن:',
 };
 
 const kok: KioskStrings = {
@@ -1660,6 +1773,13 @@ const kok: KioskStrings = {
   homeTrustedInfo: 'विस्वासू म्हायती',
   homeBrighterTomorrow: 'उज्ज्वल फाल्याखातीर',
   homeCoopFooter: 'बळिश्ट सहकार, उज्ज्वल भारत',
+  assistantGreeting: 'नमस्कार! आयज हांव तुमकां कशी मदत करूं येता?',
+  assistantListening: 'हय, हांव आयकतां...',
+  assistantThinking: 'हांव तुमकां म्हायती सोदतां...',
+  assistantSpeaking: 'ही म्हायती मेळ्ळी:',
+  assistantSuccess: 'तुमच्या सेवेखातीर सदांच तयार।',
+  assistantError: 'समजलें ना। उपकार करून परत यत्न करात।',
+  assistantYouSaid: 'तुमी म्हणलें:',
 };
 
 const mai: KioskStrings = {
@@ -1757,6 +1877,13 @@ const mai: KioskStrings = {
   homeTrustedInfo: 'भरोसेमंद जानकारी',
   homeBrighterTomorrow: 'उज्ज्वल काल्हि लेल',
   homeCoopFooter: 'मजगूत सहकारिता, उज्ज्वल भारत',
+  assistantGreeting: 'प्रणाम! आइ हम अहाँक कोना मदद कऽ सकैत छी?',
+  assistantListening: 'हँ, हम सुनि रहल छी...',
+  assistantThinking: 'हम अहाँक लेल खोजि रहल छी...',
+  assistantSpeaking: 'ई जानकारी भेटल अछि:',
+  assistantSuccess: 'अहाँक सेवा लेल सदैव प्रस्तुत छी।',
+  assistantError: 'बुझि नहि सकलहुँ। कृपया पुनः प्रयास करू।',
+  assistantYouSaid: 'अहाँ कहलहुँ:',
 };
 
 const mni: KioskStrings = {
@@ -1854,6 +1981,13 @@ const mni: KioskStrings = {
   homeTrustedInfo: 'থাজবযোগ্য ইনফোর্মেসন',
   homeBrighterTomorrow: 'অশোইবা হয়েংগী অথিংবা',
   homeCoopFooter: 'চাংবা কো-অপরেটিভ, অশোইবা ভারত',
+  assistantGreeting: 'খুরুমজরি! ঐং নহাক্কী মতেংদা করম্না মতেং পাংবা ঙমগনি?',
+  assistantListening: 'হোই, ঐং তাবা ফংই...',
+  assistantThinking: 'ঐং নহাক্কীদমক থিদুনা লৈ...',
+  assistantSpeaking: 'ফংলবা পাওখুম মসিদা লৈরে:',
+  assistantSuccess: 'নহাক্কী মতেংগীদমক মতম পুম্বদা শেম-শাদুনা লৈ।',
+  assistantError: 'খঙবা ঙমদে। চানবিদুনা অমুক হন্না হোৎনবিয়ু।',
+  assistantYouSaid: 'নহাক্না হায়খিবা:',
 };
 
 const ne: KioskStrings = {
@@ -1951,6 +2085,13 @@ const ne: KioskStrings = {
   homeTrustedInfo: 'भरपर्दो जानकारी',
   homeBrighterTomorrow: 'उज्ज्वल भोलिका लागि',
   homeCoopFooter: 'बलियो सहकारी, उज्ज्वल भारत',
+  assistantGreeting: 'नमस्ते! आज म तपाईंलाई कसरी मद्दत गर्न सक्छु?',
+  assistantListening: 'हजुर, म सुन्दै छु...',
+  assistantThinking: 'म तपाईंको लागि खोज्दै छु...',
+  assistantSpeaking: 'मैले फेला पारेको जानकारी यो हो:',
+  assistantSuccess: 'तपाईंको सेवाका लागि सधैं तयार छु।',
+  assistantError: 'मैले बुझिनँ। कृपया फेरि प्रयास गर्नुहोस्।',
+  assistantYouSaid: 'तपाईंले भन्नुभयो:',
 };
 
 const brx: KioskStrings = {
@@ -2048,6 +2189,13 @@ const brx: KioskStrings = {
   homeTrustedInfo: 'बिथांखि बिसायख',
   homeBrighterTomorrow: 'गोजोन सानफ्रोमबोनि थाखाय',
   homeCoopFooter: 'गोबां सहकार, गोजोन भारत',
+  assistantGreeting: 'नमस्ते! दिनै आं नोंथांखौ मानो होनना मदद हो सिगां?',
+  assistantListening: 'औ, आं खोनासं गासिनो दं...',
+  assistantThinking: 'आं नोंथांनि थाखाय नागिरगासिनो दं...',
+  assistantSpeaking: 'मोननाय खौरांआ बेनो:',
+  assistantSuccess: 'नोंथांनि मददनि थाखाय सदैय थियारि।',
+  assistantError: 'बुजि मोनासै। दया खालामनानै फिन नाजाफिनदो।',
+  assistantYouSaid: 'नोंथाङा बुंदोंमोन:',
 };
 
 const sat: KioskStrings = {
@@ -2145,6 +2293,13 @@ const sat: KioskStrings = {
   homeTrustedInfo: 'ᱵᱷᱚᱨᱥᱟ ᱡᱟᱱᱠᱟᱨᱤ',
   homeBrighterTomorrow: 'ᱡᱷᱟᱞᱟᱜ ᱜᱟᱹᱦᱤᱨ ᱞᱟᱹᱜᱤᱫ',
   homeCoopFooter: 'ᱡᱚᱨ ᱥᱟᱦᱟᱠᱟᱨ, ᱡᱷᱟᱞᱟᱜ ᱵᱷᱟᱨᱚᱛ',
+  assistantGreeting: 'जोहार! तिञᱟᱜ ᱟᱢ ᱡᱚᱛᱚ ᱞᱮᱠᱟ ᱜᱚᱜ ᱟᱢ ᱠᱚ ᱜᱚᱲᱚ ᱫᱟᱲᱮᱭᱟᱜ-ᱟ?',
+  assistantListening: 'ᱦᱮᱸ, ᱤᱧ ᱟᱸᱡᱚᱢᱮᱫ-ᱟ...',
+  assistantThinking: 'ᱤᱧ ᱟᱢ ᱞᱟᱹᱜᱤᱫ ᱯᱟᱱᱛᱮ ᱮᱫ-ᱟᱹᱧ...',
+  assistantSpeaking: 'ᱧᱟᱢ ᱟᱠᱟᱱ ᱵᱤᱵᱚᱨᱚᱱ ᱱᱚᱸᱰᱮ ᱢᱮᱱᱟᱜ-ᱟ:',
+  assistantSuccess: 'ᱟᱢᱟᱜ ᱜᱚᱲᱚ ᱞᱟᱹᱜᱤᱫ ᱡᱚᱛᱚ ᱜᱷᱟᱹᱲᱤ ᱥᱟᱯᱲᱟᱣ ᱢᱮᱱᱟᱹᱧ-ᱟ᱾',
+  assistantError: 'ᱵᱟᱹᱧ ᱵᱩᱡᱷᱟᱹᱣ ᱫᱟᱲᱮᱭᱟᱫ-ᱟ᱾ ᱫᱟᱭᱟ ᱠﺎᱛᱮ ᱟᱨᱦᱚᱸ ᱪᱮᱥᱴᱟᱭ ᱢᱮ᱾',
+  assistantYouSaid: 'ᱟᱢᱮᱢ ᱞᱟᱹᱭ ᱞᱮᱫ-ᱟ:',
 };
 
 const sd: KioskStrings = {
@@ -2242,6 +2397,13 @@ const sd: KioskStrings = {
   homeTrustedInfo: 'ڀروسي واري ڄاڻ',
   homeBrighterTomorrow: 'روشن سڀاڻي لاءِ',
   homeCoopFooter: 'مضبوط تعاون، روشن ڀارت',
+  assistantGreeting: 'نمستي! اڄ مان توهان جي ڪيئن مدد ڪري سگهان ٿي؟',
+  assistantListening: 'ها، مان ٻڌي رهي آهيان...',
+  assistantThinking: 'مان توهان لاءِ ڳولي رهي آهيان...',
+  assistantSpeaking: 'مون کي هي معلومات ملي آهي:',
+  assistantSuccess: 'توهان جي مدد لاءِ هميشه تيار آهيان.',
+  assistantError: 'سمجهه ۾ نه آيو. مهرباني ڪري ٻيهر ڪوشش ڪريو.',
+  assistantYouSaid: 'توهان چيو:',
 };
 
 /** Complete translation map for all 22 languages in the Citizen UI. */

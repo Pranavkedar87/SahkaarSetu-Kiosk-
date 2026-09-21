@@ -21,6 +21,7 @@ export interface UseAudioPlayerReturn {
   stop: () => void;
   playAgain: () => Promise<boolean>;
   hasAudio: boolean;
+  activeAudioElement?: HTMLAudioElement | null;
 }
 
 export function useAudioPlayer(): UseAudioPlayerReturn {
@@ -163,5 +164,6 @@ export function useAudioPlayer(): UseAudioPlayerReturn {
     stop,
     playAgain,
     hasAudio,
+    activeAudioElement: activeAudioRef.current,
   };
 }
