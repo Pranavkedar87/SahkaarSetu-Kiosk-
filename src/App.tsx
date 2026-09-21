@@ -73,7 +73,13 @@ function KioskApp() {
   );
 
   // ── Home actions ───────────────────────────────────────────────────────────
+  // Primary Home microphone operates inline on HomeScreen (zero redirect to VoiceScreen)
   const handleSpeak = useCallback(() => {
+    // Main microphone stays on HomeScreen
+  }, []);
+
+  // Voice handoff from other sub-screens (Type, Scan) routes to VoiceScreen
+  const handleVoiceHandoff = useCallback(() => {
     setScreen('voice');
   }, [setScreen]);
 
@@ -186,7 +192,7 @@ function KioskApp() {
           language={session.language}
           serviceAvailable={session.serviceAvailable}
           onBack={handleBackToHome}
-          onVoiceHandoff={handleSpeak}
+          onVoiceHandoff={handleVoiceHandoff}
           onChangeLanguage={handleChangeLanguage}
           onStartOver={handlePromptStartOver}
           setActiveOperation={setActiveOperation}
@@ -215,7 +221,7 @@ function KioskApp() {
           language={session.language}
           serviceAvailable={session.serviceAvailable}
           onBack={handleBackToHome}
-          onVoiceHandoff={handleSpeak}
+          onVoiceHandoff={handleVoiceHandoff}
           onTypeHandoff={handleType}
           onChangeLanguage={handleChangeLanguage}
           onStartOver={handlePromptStartOver}
@@ -264,6 +270,22 @@ function KioskApp() {
           onPacsHelp={handlePacsHelp}
           onChangeLanguage={handleChangeLanguage}
           onStartOver={handlePromptStartOver}
+          language={session.language}
+          setActiveOperation={setActiveOperation}
+          onMessageAdded={(userText, assistantText) => {
+            addMessage({
+              id: String(Date.now()),
+              role: 'user',
+              text: userText,
+              timestamp: Date.now(),
+            });
+            addMessage({
+              id: String(Date.now() + 1),
+              role: 'assistant',
+              text: assistantText,
+              timestamp: Date.now() + 1,
+            });
+          }}
         />
       );
   }

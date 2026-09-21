@@ -18,8 +18,9 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import React from 'react';
+import App from '../App';
 import { SahkaarSetuAssistant, type AssistantState } from '../components/kiosk/SahkaarSetuAssistant';
 import { HomeScreen } from '../pages/HomeScreen';
 import { useLipSync } from '../hooks/useLipSync';
@@ -182,5 +183,80 @@ describe('SahkaarSetu Virtual Assistant Character', () => {
     const assistant = screen.getByTestId('sahkaarsetu-assistant');
     expect(assistant).toHaveAttribute('data-assistant-state', 'listening');
     expect(screen.getByText(stringsEn.assistantListening)).toBeInTheDocument();
+  });
+
+  it('14. main microphone does not navigate to VoiceScreen', async () => {
+    render(<App />);
+
+    // Advance through splash to language
+    await waitFor(
+      () => {
+        expect(screen.getByRole('heading', { name: /choose your language/i })).toBeInTheDocument();
+      },
+      { timeout: 3500 }
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /english/i }));
+
+    // On Home screen
+    const micBtn = await screen.findByRole('button', { name: /speak/i });
+    expect(micBtn).toBeInTheDocument();
+    expect(screen.getByTestId('sahkaarsetu-assistant')).toBeInTheDocument();
+
+    // Click main microphone
+    fireEvent.click(micBtn);
+
+    // MUST remain on HomeScreen (assistant remains mounted, no VoiceScreen redirect)
+    expect(screen.getByTestId('sahkaarsetu-assistant')).toBeInTheDocument();
+    expect(screen.getByTestId('assistant-speech-bubble')).toBeInTheDocument();
+    expect(screen.queryByTestId('voice-screen-container')).not.toBeInTheDocument();
+  });
+
+  it('15. Ask by Voice action card uses inline voice without navigating to VoiceScreen', async () => {
+    render(<App />);
+
+    await waitFor(
+      () => {
+        expect(screen.getByRole('heading', { name: /choose your language/i })).toBeInTheDocument();
+      },
+      { timeout: 3500 }
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /english/i }));
+
+    const voiceCard = await screen.findByText(stringsEn.homeAskByVoice);
+    expect(voiceCard).toBeInTheDocument();
+
+    fireEvent.click(voiceCard);
+
+    // Remains mounted on Home screen
+    expect(screen.getByTestId('sahkaarsetu-assistant')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /speak/i })).toBeInTheDocument();
+  });
+
+  it('16. Start Over resets assistant and session', async () => {
+    render(<App />);
+
+    await waitFor(
+      () => {
+        expect(screen.getByRole('heading', { name: /choose your language/i })).toBeInTheDocument();
+      },
+      { timeout: 3500 }
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /english/i }));
+
+    const startOverBtn = await screen.findByRole('button', { name: stringsEn.promptStartOver });
+    fireEvent.click(startOverBtn);
+
+    // Confirm dialog opens
+    expect(screen.getByText(stringsEn.startOverConfirmTitle)).toBeInTheDocument();
+    const confirmButtons = screen.getAllByRole('button', { name: stringsEn.promptStartOver });
+    fireEvent.click(confirmButtons[confirmButtons.length - 1]);
+
+    // Resets to Language screen
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /choose your language/i })).toBeInTheDocument();
+    });
   });
 });

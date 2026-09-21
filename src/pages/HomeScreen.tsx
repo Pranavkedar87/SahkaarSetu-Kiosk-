@@ -21,7 +21,8 @@ import { ServiceUnavailableBanner } from '../components/kiosk/ServiceUnavailable
 import { AssistanceSlip } from '../components/kiosk/AssistanceSlip';
 import { SahkaarSetuAssistant, type AssistantState } from '../components/kiosk/SahkaarSetuAssistant';
 import { getActivePrintSlip, subscribeActivePrintSlip } from '../services/printer';
-import type { PrintPayload } from '../types';
+import { useVoiceInteraction } from '../hooks/useVoiceInteraction';
+import type { PrintPayload, LanguageCode } from '../types';
 import type { KioskStrings } from '../i18n';
 import type { SpeakButtonState } from '../types';
 import logoSrc from '../assets/logo.png';
@@ -34,7 +35,7 @@ export interface HomeScreenProps {
   strings: KioskStrings;
   serviceAvailable: boolean;
   speakState?: SpeakButtonState;
-  onSpeak: () => void;
+  onSpeak?: () => void;
   onType: () => void;
   onScan: () => void;
   onPacsHelp: () => void;
@@ -44,6 +45,9 @@ export interface HomeScreenProps {
   mouthOpen?: number;
   speechText?: string;
   userTranscript?: string;
+  language?: LanguageCode;
+  setActiveOperation?: (active: boolean) => void;
+  onMessageAdded?: (userText: string, assistantText: string) => void;
 }
 
 // ── Action card config ──────────────────────────────────────────────────────────
@@ -98,22 +102,79 @@ export function HomeScreen({
   mouthOpen = 0,
   speechText,
   userTranscript,
+  language,
+  setActiveOperation,
+  onMessageAdded,
 }: HomeScreenProps) {
   const width = useWindowWidth();
   const now = useClock();
   const isWide = width >= 1024;
   const isCompact = width <= 820;
 
-  // Determine active character state (maps speakState if provided)
+  // Real voice interaction engine (inline on HomeScreen, zero redirect)
+  const voice = useVoiceInteraction({
+    language: language || 'en',
+    strings,
+    setActiveOperation,
+    onMessageAdded,
+  });
+
+  // Determine active character state: prop overrides take precedence for tests, otherwise voice engine
   const resolvedState: AssistantState =
     assistantState ||
-    (speakState === 'listening'
+    (voice.state !== 'idle'
+      ? voice.state
+      : speakState === 'listening'
       ? 'listening'
       : speakState === 'processing'
       ? 'thinking'
       : speakState === 'error'
       ? 'error'
       : 'idle');
+
+  const resolvedMouthOpen =
+    mouthOpen !== undefined && mouthOpen !== 0 ? mouthOpen : voice.mouthOpen;
+
+  const resolvedSpeechText =
+    speechText ||
+    (voice.displayAnswer ? voice.displayAnswer : voice.errorMessage ? voice.errorMessage : undefined);
+
+  const resolvedUserTranscript =
+    userTranscript || voice.userTranscript;
+
+  // Inline microphone trigger (zero navigation away from Home)
+  const handleMainMicClick = async () => {
+    onSpeak?.();
+    if (resolvedState === 'idle') {
+      await voice.startListening();
+    } else if (resolvedState === 'listening') {
+      await voice.stopListening();
+    } else if (resolvedState === 'speaking') {
+      voice.stopAudio();
+    } else if (resolvedState === 'success' || resolvedState === 'error') {
+      await voice.startListening();
+    }
+  };
+
+  // Inline "Ask by Voice" card trigger
+  const handleVoiceCardClick = async () => {
+    onSpeak?.();
+    if (resolvedState === 'idle') {
+      await voice.startListening();
+    } else if (resolvedState === 'listening') {
+      await voice.stopListening();
+    } else if (resolvedState === 'speaking') {
+      voice.stopAudio();
+    } else {
+      await voice.startListening();
+    }
+  };
+
+  // Start Over handler resets voice state as well
+  const handleStartOverClick = () => {
+    voice.reset();
+    onStartOver();
+  };
 
   // Print slip state
   const [activeSlip, setActiveSlip] = useState<PrintPayload | null>(getActivePrintSlip);
@@ -144,7 +205,7 @@ export function HomeScreen({
       descKey: 'homeAskByVoiceDesc',
       accent: '#15803d',
       accentBg: 'rgba(21,128,61,0.12)',
-      onClick: onSpeak,
+      onClick: handleVoiceCardClick,
     },
     {
       key: 'type',
@@ -303,7 +364,7 @@ export function HomeScreen({
 
           {/* Start Over Button */}
           <button
-            onClick={onStartOver}
+            onClick={handleStartOverClick}
             aria-label={strings.promptStartOver}
             style={{
               height: '48px',
@@ -363,7 +424,7 @@ export function HomeScreen({
           {/* Rural Maharashtra Hero Assistant Background Image */}
           <img
             src={heroAssistantSrc}
-            alt="SahkaarSetu Rural Cooperative Assistant"
+            alt="SahkaarSetu Rural Cooperative Assistant Landscape"
             style={{
               position: 'absolute',
               top: 0,
@@ -399,116 +460,188 @@ export function HomeScreen({
           <div style={{ position: 'relative', zIndex: 2, width: '100%', display: 'flex', justifyContent: 'center' }}>
             <SahkaarSetuAssistant
               state={resolvedState}
-              mouthOpen={mouthOpen}
+              mouthOpen={resolvedMouthOpen}
               strings={strings}
-              speechText={speechText}
-              userTranscript={userTranscript}
+              speechText={resolvedSpeechText}
+              userTranscript={resolvedUserTranscript}
+              isAudioPlaying={voice.isPlaying}
+              onPlayAgain={voice.replayAudio}
+              onStopAudio={voice.stopAudio}
             />
           </div>
 
-          {/* Central Microphone CTA Button (~186px on 1280x800) */}
+          {/* Central Microphone CTA Button with Flanking Audio Waves (Reference B) */}
           <div
             style={{
               position: 'relative',
               zIndex: 2,
-              display: 'inline-flex',
-              flexDirection: 'column',
+              display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              gap: isWide ? '16px' : '10px',
               marginTop: '4px',
             }}
           >
-            {/* Animated Ripple Wave */}
-            <span
+            {/* Left Audio Waveform Bars */}
+            <div
               aria-hidden="true"
               style={{
-                position: 'absolute',
-                width: isWide ? '190px' : '150px',
-                height: isWide ? '190px' : '150px',
-                borderRadius: '50%',
-                border: '3px solid rgba(34, 197, 94, 0.35)',
-                animation: 'homeMicRipple 2.2s ease-out infinite',
-                pointerEvents: 'none',
-              }}
-            />
-
-            <button
-              type="button"
-              onClick={onSpeak}
-              aria-label={`${strings.actionSpeak} - ${strings.homeTapToSpeak || strings.pressToSpeak}`}
-              style={{
-                position: 'relative',
-                zIndex: 2,
-                width: isWide ? '160px' : '130px',
-                height: isWide ? '160px' : '130px',
-                minHeight: isWide ? '160px' : '130px',
-                borderRadius: '50%',
-                background:
-                  resolvedState === 'listening'
-                    ? 'linear-gradient(145deg, #10b981 0%, #047857 100%)'
-                    : resolvedState === 'thinking'
-                    ? 'linear-gradient(145deg, #0284c7 0%, #0369a1 100%)'
-                    : 'linear-gradient(145deg, #22c55e 0%, #15803d 100%)',
-                border: '5px solid rgba(255, 255, 255, 0.95)',
-                color: '#ffffff',
                 display: 'flex',
-                flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
-                gap: '4px',
-                cursor: 'pointer',
-                boxShadow: '0 0 35px rgba(34, 197, 94, 0.5), 0 16px 40px rgba(21, 128, 61, 0.35)',
-                animation: 'homeMicGlow 3s ease-in-out infinite, homeMicBreathe 4s ease-in-out infinite',
-                transition: 'transform 0.15s ease, background 0.3s ease',
-                touchAction: 'manipulation',
-                userSelect: 'none',
-                WebkitTapHighlightColor: 'transparent',
+                gap: '3px',
+                opacity: resolvedState === 'listening' || resolvedState === 'speaking' ? 1 : 0.4,
+                transition: 'opacity 0.3s ease',
               }}
             >
+              {[12, 22, 36, 20, 14].map((h, i) => (
+                <span
+                  key={i}
+                  style={{
+                    width: '4px',
+                    height: `${h}px`,
+                    background: resolvedState === 'listening' ? '#22c55e' : resolvedState === 'speaking' ? '#ea580c' : 'rgba(34, 197, 94, 0.45)',
+                    borderRadius: '4px',
+                    animation:
+                      resolvedState === 'listening' || resolvedState === 'speaking'
+                        ? `homeWaveBounce 0.7s ease-in-out infinite ${i * 0.12}s`
+                        : 'none',
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Central Circular Button Container */}
+            <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              {/* Animated Ripple Wave */}
               <span
-                style={{
-                  fontSize: isWide ? '46px' : '36px',
-                  lineHeight: 1,
-                  filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
-                }}
                 aria-hidden="true"
-              >
-                {resolvedState === 'listening' ? '🎙️' : resolvedState === 'thinking' ? '⚙️' : '🎤'}
-              </span>
-              <span
                 style={{
-                  fontSize: isWide ? '17px' : '14px',
-                  fontWeight: 800,
-                  textAlign: 'center',
-                  letterSpacing: '0.3px',
+                  position: 'absolute',
+                  top: 0,
+                  width: isWide ? '190px' : '150px',
+                  height: isWide ? '190px' : '150px',
+                  borderRadius: '50%',
+                  border: '3px solid rgba(34, 197, 94, 0.35)',
+                  animation: 'homeMicRipple 2.2s ease-out infinite',
+                  pointerEvents: 'none',
+                }}
+              />
+
+              <button
+                type="button"
+                onClick={handleMainMicClick}
+                aria-label={`${strings.actionSpeak} - ${strings.homeTapToSpeak || strings.pressToSpeak}`}
+                style={{
+                  position: 'relative',
+                  zIndex: 2,
+                  width: isWide ? '160px' : '130px',
+                  height: isWide ? '160px' : '130px',
+                  minHeight: isWide ? '160px' : '130px',
+                  borderRadius: '50%',
+                  background:
+                    resolvedState === 'listening'
+                      ? 'linear-gradient(145deg, #10b981 0%, #047857 100%)'
+                      : resolvedState === 'thinking'
+                      ? 'linear-gradient(145deg, #0284c7 0%, #0369a1 100%)'
+                      : resolvedState === 'speaking'
+                      ? 'linear-gradient(145deg, #f97316 0%, #c2410c 100%)'
+                      : 'linear-gradient(145deg, #22c55e 0%, #15803d 100%)',
+                  border: '5px solid rgba(255, 255, 255, 0.95)',
+                  color: '#ffffff',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '4px',
+                  cursor: 'pointer',
+                  boxShadow: '0 0 35px rgba(34, 197, 94, 0.5), 0 16px 40px rgba(21, 128, 61, 0.35)',
+                  animation: 'homeMicGlow 3s ease-in-out infinite, homeMicBreathe 4s ease-in-out infinite',
+                  transition: 'transform 0.15s ease, background 0.3s ease',
+                  touchAction: 'manipulation',
+                  userSelect: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: isWide ? '46px' : '36px',
+                    lineHeight: 1,
+                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+                  }}
+                  aria-hidden="true"
+                >
+                  {resolvedState === 'listening' ? '🎙️' : resolvedState === 'thinking' ? '⚙️' : resolvedState === 'speaking' ? '🔊' : '🎤'}
+                </span>
+                <span
+                  style={{
+                    fontSize: isWide ? '17px' : '14px',
+                    fontWeight: 800,
+                    textAlign: 'center',
+                    letterSpacing: '0.3px',
+                  }}
+                >
+                  {resolvedState === 'thinking'
+                    ? strings.stateProcessing || 'Processing'
+                    : resolvedState === 'speaking'
+                    ? strings.voiceStopAudio || 'Stop'
+                    : strings.actionSpeak}
+                </span>
+              </button>
+
+              {/* Tap to speak Glass Badge */}
+              <div
+                style={{
+                  marginTop: '8px',
+                  fontSize: isWide ? '14px' : '12px',
+                  fontWeight: 700,
+                  color: resolvedState === 'listening' ? '#047857' : '#15803d',
+                  background: 'rgba(255, 255, 255, 0.92)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  padding: '4px 16px',
+                  borderRadius: '20px',
+                  border: '1px solid rgba(21, 128, 61, 0.2)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+                  letterSpacing: '-0.2px',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 {resolvedState === 'listening'
-                  ? strings.stateListening || 'Listening'
+                  ? strings.voiceTapToStop || 'Tap to finish speaking'
                   : resolvedState === 'thinking'
-                  ? strings.stateProcessing || 'Processing'
-                  : strings.actionSpeak}
-              </span>
-            </button>
+                  ? strings.assistantThinking || 'Thinking...'
+                  : resolvedState === 'speaking'
+                  ? strings.voiceStopAudio || 'Tap to stop'
+                  : (strings.homeTapToSpeak || strings.pressToSpeak)}
+              </div>
+            </div>
 
-            {/* Tap to speak Glass Badge */}
+            {/* Right Audio Waveform Bars */}
             <div
+              aria-hidden="true"
               style={{
-                marginTop: '8px',
-                fontSize: isWide ? '15px' : '12px',
-                fontWeight: 700,
-                color: '#15803d',
-                background: 'rgba(255, 255, 255, 0.92)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                padding: '4px 16px',
-                borderRadius: '20px',
-                border: '1px solid rgba(21, 128, 61, 0.2)',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
-                letterSpacing: '-0.2px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3px',
+                opacity: resolvedState === 'listening' || resolvedState === 'speaking' ? 1 : 0.4,
+                transition: 'opacity 0.3s ease',
               }}
             >
-              {strings.homeTapToSpeak || strings.pressToSpeak}
+              {[14, 20, 36, 22, 12].map((h, i) => (
+                <span
+                  key={i}
+                  style={{
+                    width: '4px',
+                    height: `${h}px`,
+                    background: resolvedState === 'listening' ? '#22c55e' : resolvedState === 'speaking' ? '#ea580c' : 'rgba(34, 197, 94, 0.45)',
+                    borderRadius: '4px',
+                    animation:
+                      resolvedState === 'listening' || resolvedState === 'speaking'
+                        ? `homeWaveBounce 0.7s ease-in-out infinite ${0.48 - i * 0.12}s`
+                        : 'none',
+                  }}
+                />
+              ))}
             </div>
           </div>
         </div>
