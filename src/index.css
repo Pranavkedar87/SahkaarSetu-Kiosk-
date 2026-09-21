@@ -92,3 +92,75 @@ h1, h2, h3, button, label {
   background: #cbd5e1;
   border-radius: 3px;
 }
+
+/* ─── 58mm Thermal Printer Receipt Layout (K7) ─────────────────────────────── */
+#kiosk-thermal-slip {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: 58mm auto;
+    margin: 0;
+  }
+
+  html,
+  body {
+    width: 58mm !important;
+    min-width: 58mm !important;
+    max-width: 58mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    overflow: visible !important;
+  }
+
+  /* Hide normal Kiosk UI chrome completely during printing */
+  body * {
+    visibility: hidden !important;
+  }
+
+  header,
+  footer,
+  button,
+  .kiosk-no-print {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Show only the dedicated 58mm thermal slip */
+  #kiosk-thermal-slip,
+  #kiosk-thermal-slip * {
+    visibility: visible !important;
+  }
+
+  #kiosk-thermal-slip {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 54mm !important;
+    max-width: 54mm !important;
+    margin: 0 auto !important;
+    padding: 2mm 1.5mm !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    font-family: 'Courier New', Courier, monospace, monospace !important;
+    font-size: 7.5pt !important;
+    line-height: 1.25 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  #kiosk-thermal-slip .slip-dashed-divider {
+    border-bottom: 1px dashed #000000 !important;
+    margin: 3px 0 !important;
+    width: 100% !important;
+  }
+}
+

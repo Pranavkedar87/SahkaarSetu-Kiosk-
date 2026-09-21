@@ -11,6 +11,7 @@
  */
 
 import React, { createContext, useContext, useReducer, useCallback } from 'react';
+import { clearActivePrintSlip } from '../services/printer';
 import type { LanguageCode, KioskSession, KioskScreen, ChatMessage, DocumentContext } from '../types';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -125,6 +126,7 @@ export function KioskSessionProvider({ children }: { children: React.ReactNode }
   }, []);
 
   const resetSession = useCallback(() => {
+    clearActivePrintSlip();
     dispatch({ type: 'RESET_SESSION' });
   }, []);
 

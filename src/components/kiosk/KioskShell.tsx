@@ -8,9 +8,12 @@
  *   - Optional status / service unavailable banner
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { KioskHeader } from './KioskHeader';
 import { ServiceUnavailableBanner } from './ServiceUnavailableBanner';
+import { AssistanceSlip } from './AssistanceSlip';
+import { getActivePrintSlip, subscribeActivePrintSlip } from '../../services/printer';
+import type { PrintPayload } from '../../types';
 import type { KioskStrings } from '../../i18n';
 
 interface Props {
@@ -28,6 +31,11 @@ export function KioskShell({
   onStartOver,
   children,
 }: Props) {
+  const [activeSlip, setActiveSlip] = useState<PrintPayload | null>(getActivePrintSlip);
+
+  useEffect(() => {
+    return subscribeActivePrintSlip(setActiveSlip);
+  }, []);
   return (
     <div
       style={{
@@ -69,6 +77,9 @@ export function KioskShell({
 
         {children}
       </main>
+
+      {/* 58mm Thermal Printable Slip (styled by @media print) */}
+      <AssistanceSlip slip={activeSlip} />
     </div>
   );
 }

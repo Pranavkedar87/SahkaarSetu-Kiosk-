@@ -41,11 +41,18 @@ export interface Language {
 // Kiosk screen / navigation
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type KioskScreen = 'splash' | 'language' | 'home' | 'type' | 'scan' | 'help' | 'chat';
+export type KioskScreen = 'splash' | 'language' | 'home' | 'voice' | 'type' | 'scan' | 'help' | 'chat';
 
 export type SpeakButtonState = 'idle' | 'listening' | 'processing' | 'error';
 
-export type ScanViewState = 'idle' | 'camera_active' | 'captured' | 'processing' | 'error';
+export type ScanViewState =
+  | 'idle'
+  | 'camera_active'
+  | 'captured'
+  | 'processing'
+  | 'analyzed'
+  | 'asking'
+  | 'error';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Session
@@ -108,3 +115,139 @@ export interface HealthResponse {
   status: 'ok' | 'degraded';
   timestamp: string;
 }
+
+export interface SourceItem {
+  title?: string;
+  snippet?: string;
+  url?: string;
+  source_url?: string | null;
+  document_type?: string | null;
+}
+
+export interface QueryRequest {
+  message: string;
+  language: string;
+  session_id?: string;
+  response_mode?: string;
+}
+
+export interface QueryResponse {
+  answer: string;
+  display_answer?: string;
+  spoken_answer?: string;
+  language?: string;
+  intent?: string;
+  source?: string;
+  sources?: SourceItem[];
+  suggested_followups?: Array<{ label: string; query: string }>;
+  next_action?: string | null;
+  session_id?: string;
+  conversation_id?: string;
+  grounding_status?: string;
+}
+
+export interface TranscribeResponse {
+  transcript: string;
+  language: string;
+  confidence?: number;
+  provider?: string;
+  latency_ms?: number;
+}
+
+export interface SynthesizeResponse {
+  audio_content?: string | null;
+  audio_format?: string;
+  language?: string;
+  gender?: string;
+  provider?: string;
+  success: boolean;
+}
+
+export type VoiceFlowState =
+  | 'idle'
+  | 'listening'
+  | 'transcribing'
+  | 'querying'
+  | 'speaking'
+  | 'answered'
+  | 'error';
+
+// ─── Vision / Document Types (K6) ─────────────────────────────────────────────
+
+export type DocumentType =
+  | 'PMFBY_POLICY'
+  | 'LAND_RECORD_7_12'
+  | 'COOPERATIVE_NOTICE'
+  | 'PACS_MEMBERSHIP_FORM'
+  | 'SUBSIDY_LETTER'
+  | 'FERTILIZER_RECEIPT'
+  | 'LOAN_PASSBOOK'
+  | 'IDENTITY_DOCUMENT'
+  | 'UNKNOWN';
+
+export type ReadabilityStatus =
+  | 'CLEAR'
+  | 'BLURRY'
+  | 'CROPPED'
+  | 'POOR_LIGHTING';
+
+export interface VisionAnalyzeResponse {
+  success: boolean;
+  document_type: DocumentType | string;
+  readability: ReadabilityStatus | string;
+  detected_language?: string;
+  key_fields?: Record<string, string | null>;
+  document_summary?: string | null;
+  suggested_questions?: string[];
+  has_sensitive_pii?: boolean;
+  refusal_reason?: string | null;
+  processing_time_ms?: number;
+}
+
+export interface VisionQueryRequest {
+  extracted_text: string;
+  language: string;
+  session_id?: string | null;
+  device_id?: string | null;
+}
+
+export type ScanFlowState = ScanViewState;
+
+// ─── Thermal Printer Types (K7) ───────────────────────────────────────────────
+
+export type PrinterStatus =
+  | 'ready'
+  | 'offline'
+  | 'unavailable'
+  | 'printing'
+  | 'error';
+
+export interface PrintPayload {
+  title?: string;
+  subTitle?: string;
+  question?: string;
+  guidance: string;
+  referenceCode?: string;
+  pacsName?: string;
+  village?: string;
+  category?: string;
+  language: string;
+  createdAt?: string;
+  sources?: string[];
+  disclaimer?: string;
+  qrPayload?: string;
+}
+
+export interface PrintResult {
+  success: boolean;
+  error?: string;
+  via: 'thermal' | 'browser';
+}
+
+export interface ThermalPrinterInterface {
+  isAvailable(): Promise<boolean>;
+  getStatus(): Promise<PrinterStatus>;
+  printSlip(payload: PrintPayload): Promise<PrintResult>;
+  cancel?(): void;
+}
+

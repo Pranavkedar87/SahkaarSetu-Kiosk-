@@ -19,6 +19,7 @@ import { HomeScreen } from './pages/HomeScreen';
 import { TypeScreen } from './pages/TypeScreen';
 import { ScanScreen } from './pages/ScanScreen';
 import { HelpScreen } from './pages/HelpScreen';
+import { VoiceScreen } from './pages/VoiceScreen';
 import { TimeoutWarningModal } from './components/common/TimeoutWarningModal';
 import { ConfirmDialog } from './components/common/ConfirmDialog';
 import { getStrings } from './i18n';
@@ -31,6 +32,7 @@ function KioskApp() {
     session,
     setLanguage,
     setScreen,
+    setActiveOperation,
     resetSession,
     addMessage,
   } = useKioskSession();
@@ -41,7 +43,7 @@ function KioskApp() {
   const [showConfirmStartOver, setShowConfirmStartOver] = useState(false);
 
   // Speak button interactive placeholder state for K3
-  const [speakState, setSpeakState] = useState<SpeakButtonState>('idle');
+  const [speakState] = useState<SpeakButtonState>('idle');
 
   // Inactivity timeout — active on all operational kiosk screens
   const isKioskActive =
@@ -72,15 +74,8 @@ function KioskApp() {
 
   // ── Home actions ───────────────────────────────────────────────────────────
   const handleSpeak = useCallback(() => {
-    // K3 UI state demonstration: toggle to listening, then idle
-    setSpeakState('listening');
-    setTimeout(() => {
-      setSpeakState('processing');
-      setTimeout(() => {
-        setSpeakState('idle');
-      }, 1500);
-    }, 2000);
-  }, []);
+    setScreen('voice');
+  }, [setScreen]);
 
   const handleType = useCallback(() => {
     setScreen('type');
@@ -155,15 +150,60 @@ function KioskApp() {
       );
       break;
 
+    case 'voice':
+      content = (
+        <VoiceScreen
+          strings={strings}
+          language={session.language}
+          serviceAvailable={session.serviceAvailable}
+          onBack={handleBackToHome}
+          onTypeInstead={handleType}
+          onChangeLanguage={handleChangeLanguage}
+          onStartOver={handlePromptStartOver}
+          setActiveOperation={setActiveOperation}
+          onMessageAdded={(userText, assistantText) => {
+            addMessage({
+              id: String(Date.now()),
+              role: 'user',
+              text: userText,
+              timestamp: Date.now(),
+            });
+            addMessage({
+              id: String(Date.now() + 1),
+              role: 'assistant',
+              text: assistantText,
+              timestamp: Date.now() + 1,
+            });
+          }}
+        />
+      );
+      break;
+
     case 'type':
       content = (
         <TypeScreen
           strings={strings}
+          language={session.language}
           serviceAvailable={session.serviceAvailable}
-          onAsk={handleAskQuestion}
           onBack={handleBackToHome}
+          onVoiceHandoff={handleSpeak}
           onChangeLanguage={handleChangeLanguage}
           onStartOver={handlePromptStartOver}
+          setActiveOperation={setActiveOperation}
+          onMessageAdded={(userText, assistantText) => {
+            addMessage({
+              id: String(Date.now()),
+              role: 'user',
+              text: userText,
+              timestamp: Date.now(),
+            });
+            addMessage({
+              id: String(Date.now() + 1),
+              role: 'assistant',
+              text: assistantText,
+              timestamp: Date.now() + 1,
+            });
+          }}
         />
       );
       break;
@@ -172,10 +212,28 @@ function KioskApp() {
       content = (
         <ScanScreen
           strings={strings}
+          language={session.language}
           serviceAvailable={session.serviceAvailable}
           onBack={handleBackToHome}
+          onVoiceHandoff={handleSpeak}
+          onTypeHandoff={handleType}
           onChangeLanguage={handleChangeLanguage}
           onStartOver={handlePromptStartOver}
+          setActiveOperation={setActiveOperation}
+          onMessageAdded={(userText, assistantText) => {
+            addMessage({
+              id: String(Date.now()),
+              role: 'user',
+              text: userText,
+              timestamp: Date.now(),
+            });
+            addMessage({
+              id: String(Date.now() + 1),
+              role: 'assistant',
+              text: assistantText,
+              timestamp: Date.now() + 1,
+            });
+          }}
         />
       );
       break;
@@ -184,6 +242,7 @@ function KioskApp() {
       content = (
         <HelpScreen
           strings={strings}
+          language={session.language}
           serviceAvailable={session.serviceAvailable}
           onBack={handleBackToHome}
           onChangeLanguage={handleChangeLanguage}
