@@ -732,6 +732,47 @@ describe('K5: Text Query Interface & Pipeline', () => {
       unmount();
     }
   });
+
+  // 21. Error view back and edit actions
+  it('21. allows user to go Back or Edit their question from the error screen', async () => {
+    vi.mocked(api.sendQuery).mockRejectedValueOnce(new Error('Network error'));
+
+    render(
+      <TypeScreen
+        strings={stringsEn}
+        language="en"
+        serviceAvailable={true}
+        onBack={mockOnBack}
+        onVoiceHandoff={mockOnVoiceHandoff}
+        onChangeLanguage={mockOnChangeLanguage}
+        onStartOver={mockOnStartOver}
+        setActiveOperation={mockSetActiveOperation}
+      />
+    );
+
+    const input = screen.getByPlaceholderText(stringsEn.typeQuestion);
+    fireEvent.change(input, { target: { value: 'How to register a PACS?' } });
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(stringsEn.actionAsk, 'i') }));
+
+    // Wait for error state
+    await waitFor(() => {
+      expect(screen.getByText(stringsEn.stateErrorTryAgain)).toBeInTheDocument();
+    });
+
+    // Verify Back button exists and calls onBack
+    const backBtn = screen.getByRole('button', { name: new RegExp(stringsEn.actionBack, 'i') });
+    expect(backBtn).toBeInTheDocument();
+    fireEvent.click(backBtn);
+    expect(mockOnBack).toHaveBeenCalledTimes(1);
+
+    // Verify Edit button exists and restores input form with question intact
+    const editBtn = screen.getByRole('button', { name: new RegExp(stringsEn.typeQuestion, 'i') });
+    expect(editBtn).toBeInTheDocument();
+    fireEvent.click(editBtn);
+
+    expect(screen.getByPlaceholderText(stringsEn.typeQuestion)).toBeInTheDocument();
+    expect(screen.getByDisplayValue('How to register a PACS?')).toBeInTheDocument();
+  });
 });
 
 describe('K5: Full App Type Navigation & Integration Flow', () => {
@@ -770,6 +811,36 @@ describe('K5: Full App Type Navigation & Integration Flow', () => {
     // 8. Enters VoiceScreen
     await waitFor(() => {
       expect(screen.getByText(/listening/i)).toBeInTheDocument();
+    });
+  });
+
+  it('error in TypeScreen allows clicking Back to return to HomeScreen', async () => {
+    vi.mocked(api.sendQuery).mockRejectedValueOnce(new Error('Server unavailable'));
+
+    render(<App />);
+
+    // 1. Home -> tap Type
+    const typeBtn = await screen.findByRole('button', { name: /type/i });
+    fireEvent.click(typeBtn);
+
+    // 2. Type -> submit question
+    const input = await screen.findByPlaceholderText(/type your question/i);
+    fireEvent.change(input, { target: { value: 'Test failing question' } });
+    fireEvent.click(screen.getByRole('button', { name: /ask/i }));
+
+    // 3. Error displayed
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /unable to process/i })).toBeInTheDocument();
+    });
+
+    // 4. Click Back on error screen
+    const backBtn = screen.getByRole('button', { name: /back/i });
+    expect(backBtn).toBeInTheDocument();
+    fireEvent.click(backBtn);
+
+    // 5. Successfully returns to Home Screen
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /type/i })).toBeInTheDocument();
     });
   });
 });

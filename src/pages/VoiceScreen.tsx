@@ -244,6 +244,7 @@ export function VoiceScreen({
     <KioskShell
       strings={strings}
       serviceAvailable={serviceAvailable}
+      onBack={onBack}
       onChangeLanguage={() => {
         voiceRecorder.cancelRecording();
         audioPlayer.stop();
@@ -633,12 +634,13 @@ export function VoiceScreen({
               {errorMessage || strings.voiceServiceUnavailable}
             </p>
 
-            <div style={{ display: 'flex', gap: '14px', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <button
                 type="button"
                 onClick={handleRetry}
                 style={{
                   flex: 1,
+                  minWidth: '140px',
                   minHeight: '56px',
                   backgroundColor: '#15803d',
                   color: '#ffffff',
@@ -655,9 +657,30 @@ export function VoiceScreen({
 
               <button
                 type="button"
+                onClick={onBack}
+                style={{
+                  flex: 1,
+                  minWidth: '140px',
+                  minHeight: '56px',
+                  backgroundColor: '#f1f5f9',
+                  color: '#334155',
+                  border: '2px solid #cbd5e1',
+                  borderRadius: '12px',
+                  fontSize: '18px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  touchAction: 'manipulation',
+                }}
+              >
+                ← {strings.actionBack}
+              </button>
+
+              <button
+                type="button"
                 onClick={onTypeInstead}
                 style={{
                   flex: 1,
+                  minWidth: '140px',
                   minHeight: '56px',
                   backgroundColor: '#ffffff',
                   color: '#1e3a5f',

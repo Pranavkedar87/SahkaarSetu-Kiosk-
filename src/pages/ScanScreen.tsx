@@ -353,6 +353,7 @@ export function ScanScreen({
     <KioskShell
       strings={strings}
       serviceAvailable={serviceAvailable}
+      onBack={onBack}
       onChangeLanguage={onChangeLanguage}
       onStartOver={onStartOver}
     >

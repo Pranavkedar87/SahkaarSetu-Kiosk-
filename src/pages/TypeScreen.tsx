@@ -168,6 +168,7 @@ export function TypeScreen({
     <KioskShell
       strings={strings}
       serviceAvailable={serviceAvailable}
+      onBack={onBack}
       onChangeLanguage={onChangeLanguage}
       onStartOver={handleStartOver}
     >
@@ -567,12 +568,12 @@ export function TypeScreen({
               {errorMessage || strings.textServiceUnavailable}
             </p>
 
-            <div style={{ display: 'flex', gap: '14px', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <button
                 type="button"
                 onClick={handleRetry}
                 style={{
-                  flex: 1,
+                  flex: '1 1 130px',
                   minHeight: '56px',
                   backgroundColor: '#15803d',
                   color: '#ffffff',
@@ -587,12 +588,50 @@ export function TypeScreen({
                 🔄 {strings.voiceTryAgain}
               </button>
 
+              <button
+                type="button"
+                onClick={() => setFlowState('input')}
+                style={{
+                  flex: '1 1 130px',
+                  minHeight: '56px',
+                  backgroundColor: '#eff6ff',
+                  color: '#1d4ed8',
+                  border: '2px solid #93c5fd',
+                  borderRadius: '12px',
+                  fontSize: '18px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  touchAction: 'manipulation',
+                }}
+              >
+                ✏️ {strings.typeQuestion}
+              </button>
+
+              <button
+                type="button"
+                onClick={onBack}
+                style={{
+                  flex: '1 1 130px',
+                  minHeight: '56px',
+                  backgroundColor: '#f1f5f9',
+                  color: '#334155',
+                  border: '2px solid #cbd5e1',
+                  borderRadius: '12px',
+                  fontSize: '18px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  touchAction: 'manipulation',
+                }}
+              >
+                ← {strings.actionBack}
+              </button>
+
               {onVoiceHandoff && (
                 <button
                   type="button"
                   onClick={onVoiceHandoff}
                   style={{
-                    flex: 1,
+                    flex: '1 1 130px',
                     minHeight: '56px',
                     backgroundColor: '#f0fdf4',
                     color: '#15803d',
@@ -612,7 +651,7 @@ export function TypeScreen({
                 type="button"
                 onClick={handleStartOver}
                 style={{
-                  flex: 1,
+                  flex: '1 1 130px',
                   minHeight: '56px',
                   backgroundColor: '#ffffff',
                   color: '#1e3a5f',

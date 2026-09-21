@@ -153,43 +153,55 @@ export async function transcribeAudio(
   }
 }
 
-// ─── Chatbot Query ───────────────────────────────────────────────────────────
-
 export async function sendQuery(
   requestData: QueryRequest,
   signal?: AbortSignal
 ): Promise<QueryResponse> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 35000);
+  const maxAttempts = 2;
+  let attempts = 0;
 
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/query`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: requestData.message,
-        language: requestData.language,
-        session_id: requestData.session_id,
-        response_mode: requestData.response_mode || 'text',
-      }),
-      signal: signal ?? controller.signal,
-    });
+  while (attempts < maxAttempts) {
+    attempts++;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
 
-    clearTimeout(timeoutId);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/query`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: requestData.message,
+          language: requestData.language,
+          session_id: requestData.session_id,
+          response_mode: requestData.response_mode || 'text',
+        }),
+        signal: signal ?? controller.signal,
+      });
 
-    if (!res.ok) {
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        return await res.json();
+      }
+
       const errData = await res.json().catch(() => ({ detail: 'Query failed' }));
-      throw new Error(errData.detail || `Query failed with status ${res.status}`);
+      if (attempts >= maxAttempts) {
+        throw new Error(errData.detail || `Query failed with status ${res.status}`);
+      }
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+      if (attempts >= maxAttempts) {
+        if (err.name === 'AbortError') {
+          throw new Error('Query request timed out');
+        }
+        throw err;
+      }
+      // Pause briefly before retrying in case cold backend is booting
+      await new Promise((r) => setTimeout(r, 1500));
     }
-
-    return await res.json();
-  } catch (err: any) {
-    clearTimeout(timeoutId);
-    if (err.name === 'AbortError') {
-      throw new Error('Query request timed out');
-    }
-    throw err;
   }
+
+  throw new Error('Query request failed');
 }
 
 // ─── Voice: Speech Synthesis (TTS) ───────────────────────────────────────────

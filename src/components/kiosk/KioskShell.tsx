@@ -19,6 +19,7 @@ import type { KioskStrings } from '../../i18n';
 interface Props {
   strings: KioskStrings;
   serviceAvailable?: boolean;
+  onBack?: () => void;
   onChangeLanguage: () => void;
   onStartOver: () => void;
   children: React.ReactNode;
@@ -27,6 +28,7 @@ interface Props {
 export function KioskShell({
   strings,
   serviceAvailable = true,
+  onBack,
   onChangeLanguage,
   onStartOver,
   children,
