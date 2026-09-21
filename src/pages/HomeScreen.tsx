@@ -407,7 +407,7 @@ export function HomeScreen({
           position: 'relative',
         }}
       >
-        {/* ── Left Hero Panel (54–56% width): AI Guide + Mic ── */}
+        {/* ── Left Hero Panel (54–56% width): Animated Assistant + Mic ── */}
         <div
           style={{
             flex: isWide ? '0 0 54%' : '0 0 auto',
@@ -415,9 +415,8 @@ export function HomeScreen({
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            gap: isWide ? '32px' : '18px',
-            padding: isWide ? '24px 28px' : '16px',
+            justifyContent: 'space-between',
+            padding: isWide ? '16px 28px 18px' : '12px 16px',
             overflow: 'hidden',
             minHeight: isWide ? 'auto' : '360px',
           }}
