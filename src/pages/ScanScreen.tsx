@@ -165,7 +165,7 @@ export function ScanScreen({
         setTimeout(() => {
           if (videoRef.current) {
             videoRef.current.srcObject = stream;
-            videoRef.current.play().catch(() => {});
+            videoRef.current.play()?.catch(() => {});
           }
         }, 50);
         return;

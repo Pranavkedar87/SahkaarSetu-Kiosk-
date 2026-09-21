@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=SahkaarSetu Kiosk
+Comment=Cooperative Assistance Kiosk for Raspberry Pi 5
+Exec=/home/pi/SahkaarSetu-Kiosk/scripts/kiosk-startup.sh
+Terminal=false
+StartupNotify=false
+X-GNOME-Autostart-enabled=true

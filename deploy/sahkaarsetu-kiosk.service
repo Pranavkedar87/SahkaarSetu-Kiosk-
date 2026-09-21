@@ -1,0 +1,17 @@
+[Unit]
+Description=SahkaarSetu Cooperative Assistance Kiosk (Raspberry Pi 5)
+After=network-online.target graphical.target sound.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/pi/.Xauthority
+ExecStart=/home/pi/SahkaarSetu-Kiosk/scripts/kiosk-startup.sh
+Restart=always
+RestartSec=5
+KillMode=process
+
+[Install]
+WantedBy=graphical.target
