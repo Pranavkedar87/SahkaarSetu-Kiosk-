@@ -120,6 +120,12 @@ describe('HomeScreen', () => {
     expect(screen.getByText(strings.homeSubGreeting)).toBeInTheDocument();
   });
 
+  it('renders rural cooperative assistant hero image with appropriate alt text', () => {
+    render(<HomeScreen {...DEFAULT_PROPS} />);
+    const heroImg = screen.getByAltText(/rural cooperative assistant/i);
+    expect(heroImg).toBeInTheDocument();
+  });
+
   it('renders live clock time and date display', () => {
     render(<HomeScreen {...DEFAULT_PROPS} />);
     expect(screen.getByTestId('clock-time')).toBeInTheDocument();

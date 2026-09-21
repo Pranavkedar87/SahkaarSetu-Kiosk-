@@ -63,6 +63,26 @@
   }
 }
 
+@keyframes homeMicBreathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes homeHeroImageScale {
+  from {
+    transform: scale(1.04);
+    opacity: 0.85;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* ── Background & Parallax ───────────────────────────────────────────────────── */
 
 @keyframes homeSubtleShift {

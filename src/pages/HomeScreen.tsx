@@ -1,19 +1,20 @@
 /**
- * HomeScreen — K9 Redesigned
+ * HomeScreen — K9 Visual Polish
  *
- * Premium rural-India-themed kiosk home dashboard inspired by the
- * SahkaarSetu AI Kiosk reference design.
+ * Full-fidelity AI-assisted rural cooperative kiosk interface.
+ * Matches the approved reference visual composition:
+ *   Left (54–56%): Full-height rural Maharashtra assistant backdrop,
+ *                  translucent glass welcome card ("Namaste!"),
+ *                  large glowing circular microphone CTA (~190px).
+ *   Right (44–46%): "How can we help you?", 2x2 prominent action cards
+ *                   (Voice, Type, Scan, PACS) with glassmorphism,
+ *                   rich typography, and large touch targets.
+ *   Bottom: Cooperative green/saffron decorative wave with 3 trust badges.
  *
- * Layout:
- *   Header: logo + quote + time/date/status + controls
- *   Main:   hero panel (left) + action grid (right)  — 2-col ≥1024px, stacked <1024px
- *   Bottom: info strip + footer
- *
- * All existing K4/K5/K6/K7 functionality preserved.
- * Props interface is identical to the original HomeScreen.
+ * All K4/K5/K6/K7 capabilities preserved.
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ServiceUnavailableBanner } from '../components/kiosk/ServiceUnavailableBanner';
 import { AssistanceSlip } from '../components/kiosk/AssistanceSlip';
 import { getActivePrintSlip, subscribeActivePrintSlip } from '../services/printer';
@@ -21,9 +22,10 @@ import type { PrintPayload } from '../types';
 import type { KioskStrings } from '../i18n';
 import type { SpeakButtonState } from '../types';
 import logoSrc from '../assets/logo.png';
+import heroAssistantSrc from '../assets/hero-assistant.jpg';
 import '../styles/HomeAnimations.css';
 
-// ── Props (unchanged from original HomeScreen) ─────────────────────────────────
+// ── Props ──────────────────────────────────────────────────────────────────────
 
 interface Props {
   strings: KioskStrings;
@@ -50,7 +52,7 @@ interface ActionCardConfig {
   onClick: () => void;
 }
 
-// ── Responsive hook ─────────────────────────────────────────────────────────────
+// ── Responsive width hook ──────────────────────────────────────────────────────
 
 function useWindowWidth() {
   const [width, setWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1280);
@@ -89,8 +91,9 @@ export function HomeScreen({
   const width = useWindowWidth();
   const now = useClock();
   const isWide = width >= 1024;
+  const isCompact = width <= 820;
 
-  // Print slip state (from KioskShell — replicated here since HomeScreen owns its layout)
+  // Print slip state
   const [activeSlip, setActiveSlip] = useState<PrintPayload | null>(getActivePrintSlip);
   useEffect(() => subscribeActivePrintSlip(setActiveSlip), []);
 
@@ -107,11 +110,10 @@ export function HomeScreen({
     };
   }, []);
 
-  // Format time/date
   const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const dateStr = now.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' });
 
-  // Action cards
+  // 4 Action Cards
   const cards: ActionCardConfig[] = [
     {
       key: 'voice',
@@ -119,7 +121,7 @@ export function HomeScreen({
       titleKey: 'homeAskByVoice',
       descKey: 'homeAskByVoiceDesc',
       accent: '#15803d',
-      accentBg: 'rgba(21,128,61,0.08)',
+      accentBg: 'rgba(21,128,61,0.12)',
       onClick: onSpeak,
     },
     {
@@ -128,36 +130,36 @@ export function HomeScreen({
       titleKey: 'homeTypeQuestion',
       descKey: 'homeTypeQuestionDesc',
       actionKey: 'actionType',
-      accent: '#0369a1',
-      accentBg: 'rgba(3,105,161,0.08)',
+      accent: '#0284c7',
+      accentBg: 'rgba(2,132,199,0.12)',
       onClick: onType,
     },
     {
       key: 'scan',
-      icon: '📷',
+      icon: '📄',
       titleKey: 'homeScanDocument',
       descKey: 'homeScanDocumentDesc',
-      accent: '#c2410c',
-      accentBg: 'rgba(194,65,12,0.08)',
+      accent: '#ea580c',
+      accentBg: 'rgba(234,88,12,0.12)',
       onClick: onScan,
     },
     {
       key: 'pacs',
-      icon: '🏛️',
+      icon: '🤝',
       titleKey: 'homePacsAssistance',
       descKey: 'homePacsAssistanceDesc',
       actionKey: 'actionHelpPacs',
       accent: '#7c3aed',
-      accentBg: 'rgba(124,58,237,0.08)',
+      accentBg: 'rgba(124,58,237,0.12)',
       onClick: onPacsHelp,
     },
   ];
 
-  // ── Info strip items ──────────────────────────────────────────────────────────
+  // 3 Trust indicators
   const infoItems = [
     { icon: '🌾', textKey: 'homeFarmerFriendly' as keyof KioskStrings },
-    { icon: '✅', textKey: 'homeTrustedInfo' as keyof KioskStrings },
-    { icon: '🌅', textKey: 'homeBrighterTomorrow' as keyof KioskStrings },
+    { icon: '✓', textKey: 'homeTrustedInfo' as keyof KioskStrings },
+    { icon: '🌱', textKey: 'homeBrighterTomorrow' as keyof KioskStrings },
   ];
 
   return (
@@ -173,40 +175,40 @@ export function HomeScreen({
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       }}
     >
-      {/* ═══════════════ HEADER ═══════════════ */}
+      {/* ═══════════════ HEADER BAR ═══════════════ */}
       <header
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '10px 24px',
+          padding: '8px 24px',
           height: '64px',
           flexShrink: 0,
-          background: 'rgba(255,255,255,0.85)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(21,128,61,0.1)',
-          zIndex: 10,
+          background: 'rgba(255,255,255,0.92)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderBottom: '1.5px solid rgba(21,128,61,0.12)',
+          zIndex: 20,
         }}
       >
-        {/* Left: Brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Left: Brand Identity */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <img
             src={logoSrc}
             alt="SahkaarSetu Logo"
-            style={{ height: '40px', width: '40px', objectFit: 'contain' }}
+            style={{ height: '42px', width: '42px', objectFit: 'contain' }}
           />
           <div>
-            <div style={{ fontSize: '18px', fontWeight: 800, color: '#15803d', lineHeight: 1.1 }}>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: '#15803d', lineHeight: 1.1, letterSpacing: '-0.3px' }}>
               {strings.brandName}
             </div>
-            <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 500 }}>
+            <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>
               {strings.tagline}
             </div>
           </div>
         </div>
 
-        {/* Center: Quote (only on wide screens) */}
+        {/* Center: Quote (wide screens) */}
         {isWide && (
           <div
             style={{
@@ -214,27 +216,30 @@ export function HomeScreen({
               fontSize: '15px',
               fontWeight: 700,
               color: '#1e3a5f',
-              opacity: 0.8,
               letterSpacing: '-0.2px',
+              background: 'rgba(21,128,61,0.06)',
+              padding: '6px 18px',
+              borderRadius: '20px',
+              border: '1px solid rgba(21,128,61,0.15)',
             }}
           >
             {strings.homeQuote || strings.tagline}
           </div>
         )}
 
-        {/* Right: Status + Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Right: Connectivity + Time + Controls */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           {/* Time & Date */}
           <div style={{ textAlign: 'right', lineHeight: 1.2 }}>
             <div data-testid="clock-time" style={{ fontSize: '15px', fontWeight: 700, color: '#1e3a5f' }}>
               {timeStr}
             </div>
-            <div data-testid="clock-date" style={{ fontSize: '11px', color: '#64748b', fontWeight: 500 }}>
+            <div data-testid="clock-date" style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>
               {dateStr}
             </div>
           </div>
 
-          {/* Connectivity */}
+          {/* Connectivity Indicator */}
           <div
             data-testid="connectivity-indicator"
             title={isOnline ? 'Online' : 'Offline'}
@@ -243,12 +248,12 @@ export function HomeScreen({
               height: '10px',
               borderRadius: '50%',
               backgroundColor: isOnline ? '#22c55e' : '#ef4444',
-              boxShadow: `0 0 6px ${isOnline ? 'rgba(34,197,94,0.5)' : 'rgba(239,68,68,0.5)'}`,
+              boxShadow: `0 0 8px ${isOnline ? 'rgba(34,197,94,0.6)' : 'rgba(239,68,68,0.6)'}`,
               flexShrink: 0,
             }}
           />
 
-          {/* Language */}
+          {/* Language Selector */}
           <button
             onClick={onChangeLanguage}
             aria-label={strings.changeLanguage}
@@ -258,19 +263,23 @@ export function HomeScreen({
               padding: '0 16px',
               background: 'rgba(21,128,61,0.08)',
               color: '#15803d',
-              border: '1.5px solid rgba(21,128,61,0.2)',
-              borderRadius: '10px',
+              border: '2px solid rgba(21,128,61,0.25)',
+              borderRadius: '12px',
               fontSize: '14px',
               fontWeight: 700,
               cursor: 'pointer',
               whiteSpace: 'nowrap',
               touchAction: 'manipulation',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
             }}
           >
-            🌐 {strings.changeLanguage}
+            <span>🌐</span>
+            <span>{strings.changeLanguage}</span>
           </button>
 
-          {/* Start Over */}
+          {/* Start Over Button */}
           <button
             onClick={onStartOver}
             aria-label={strings.promptStartOver}
@@ -280,110 +289,114 @@ export function HomeScreen({
               padding: '0 16px',
               background: 'rgba(220,38,38,0.06)',
               color: '#dc2626',
-              border: '1.5px solid rgba(220,38,38,0.2)',
-              borderRadius: '10px',
+              border: '2px solid rgba(220,38,38,0.25)',
+              borderRadius: '12px',
               fontSize: '14px',
               fontWeight: 700,
               cursor: 'pointer',
               whiteSpace: 'nowrap',
               touchAction: 'manipulation',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
             }}
           >
-            ↩ {strings.promptStartOver}
+            <span>↩</span>
+            <span>{strings.promptStartOver}</span>
           </button>
         </div>
       </header>
 
-      {/* Service unavailable */}
+      {/* Service Unavailable Banner */}
       {!serviceAvailable && (
-        <div style={{ padding: '0 24px', paddingTop: '8px' }}>
+        <div style={{ padding: '0 24px', paddingTop: '8px', zIndex: 15 }}>
           <ServiceUnavailableBanner strings={strings} />
         </div>
       )}
 
-      {/* ═══════════════ MAIN ═══════════════ */}
+      {/* ═══════════════ MAIN VIEWPORT ═══════════════ */}
       <main
         style={{
           flex: 1,
           display: 'flex',
           flexDirection: isWide ? 'row' : 'column',
           overflow: 'hidden',
-          padding: isWide ? '0' : '12px 16px',
-          gap: isWide ? '0' : '16px',
+          position: 'relative',
         }}
       >
-        {/* ── Hero Panel (Left) ─────────────────────────────────────────────── */}
+        {/* ── Left Hero Panel (54–56% width): Real Assistant Image + Welcome + Mic ── */}
         <div
           style={{
-            flex: isWide ? '1 1 50%' : '0 0 auto',
+            flex: isWide ? '0 0 54%' : '0 0 auto',
+            position: 'relative',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            position: 'relative',
-            padding: isWide ? '32px' : '16px',
-            background: isWide
-              ? 'linear-gradient(160deg, rgba(21,128,61,0.06) 0%, rgba(194,65,12,0.04) 50%, rgba(21,128,61,0.02) 100%)'
-              : 'transparent',
-            animation: 'homeHeroFadeIn 0.8s ease-out both',
+            padding: isWide ? '24px 32px' : '16px 20px',
             overflow: 'hidden',
+            minHeight: isWide ? 'auto' : '320px',
           }}
         >
-          {/* Decorative gradient circles (background depth) */}
-          {isWide && (
-            <>
-              <div
-                aria-hidden="true"
-                style={{
-                  position: 'absolute',
-                  top: '-60px',
-                  left: '-40px',
-                  width: '260px',
-                  height: '260px',
-                  borderRadius: '50%',
-                  background: 'radial-gradient(circle, rgba(21,128,61,0.08) 0%, transparent 70%)',
-                  pointerEvents: 'none',
-                }}
-              />
-              <div
-                aria-hidden="true"
-                style={{
-                  position: 'absolute',
-                  bottom: '-40px',
-                  right: '-20px',
-                  width: '200px',
-                  height: '200px',
-                  borderRadius: '50%',
-                  background: 'radial-gradient(circle, rgba(234,88,12,0.06) 0%, transparent 70%)',
-                  pointerEvents: 'none',
-                }}
-              />
-            </>
-          )}
+          {/* Rural Maharashtra Hero Assistant Background Image */}
+          <img
+            src={heroAssistantSrc}
+            alt="SahkaarSetu Rural Cooperative Assistant"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center 22%',
+              zIndex: 0,
+              animation: 'homeHeroImageScale 1.2s ease-out both',
+            }}
+          />
 
-          {/* Welcome Card */}
+          {/* Soft Blended Gradient Overlays (preserves face clarity, blends seamlessly) */}
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: isWide
+                ? 'linear-gradient(to right, rgba(0,0,0,0.12) 0%, rgba(240,253,244,0.10) 45%, rgba(240,253,244,0.85) 90%, #f0fdf4 100%)'
+                : 'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(240,253,244,0.7) 70%, #f0fdf4 100%)',
+              zIndex: 1,
+              pointerEvents: 'none',
+            }}
+          />
+
+          {/* Welcome Card — Translucent Glass */}
           <div
             style={{
-              background: 'rgba(255,255,255,0.75)',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
-              borderRadius: '24px',
-              border: '1px solid rgba(255,255,255,0.6)',
-              padding: isWide ? '28px 36px' : '20px 24px',
+              position: 'relative',
+              zIndex: 2,
+              background: 'rgba(255, 255, 255, 0.88)',
+              backdropFilter: 'blur(18px)',
+              WebkitBackdropFilter: 'blur(18px)',
+              borderRadius: '26px',
+              border: '1.5px solid rgba(255, 255, 255, 0.95)',
+              padding: isWide ? '20px 32px' : '14px 22px',
               textAlign: 'center',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.06)',
-              marginBottom: isWide ? '28px' : '16px',
+              boxShadow: '0 12px 36px rgba(0,0,0,0.10)',
+              marginBottom: isWide ? '22px' : '12px',
               animation: 'homeFadeInUp 0.6s ease-out 0.2s both',
-              maxWidth: '420px',
+              maxWidth: isWide ? '400px' : '340px',
               width: '100%',
             }}
           >
             <div
               style={{
-                fontSize: isWide ? '36px' : '28px',
+                fontSize: isWide ? '34px' : '26px',
                 fontWeight: 800,
                 color: '#15803d',
-                marginBottom: '6px',
+                marginBottom: '4px',
                 letterSpacing: '-0.5px',
               }}
             >
@@ -393,34 +406,37 @@ export function HomeScreen({
               style={{
                 fontSize: isWide ? '18px' : '15px',
                 fontWeight: 600,
-                color: '#475569',
-                lineHeight: 1.4,
+                color: '#1e293b',
+                lineHeight: 1.35,
               }}
             >
-              {strings.homeSubGreeting || strings.howCanWeHelp}
+              {strings.homeSubGreeting || 'How can I help you today?'}
             </div>
           </div>
 
-          {/* ── Central Microphone CTA ──────────────────────────────────────── */}
+          {/* Central Microphone CTA Button (~190px on 1280x800) */}
           <div
             style={{
               position: 'relative',
+              zIndex: 2,
               display: 'inline-flex',
-              justifyContent: 'center',
+              flexDirection: 'column',
               alignItems: 'center',
-              animation: 'homeFadeInUp 0.6s ease-out 0.4s both',
+              justifyContent: 'center',
+              animation: 'homeFadeInUp 0.6s ease-out 0.35s both',
             }}
           >
-            {/* Ripple ring */}
+            {/* Animated Ripple Wave */}
             <span
               aria-hidden="true"
               style={{
                 position: 'absolute',
-                width: '180px',
-                height: '180px',
+                width: isWide ? '210px' : '160px',
+                height: isWide ? '210px' : '160px',
                 borderRadius: '50%',
-                border: '2px solid rgba(21,128,61,0.15)',
-                animation: 'homeMicRipple 2.5s ease-out infinite',
+                border: '3px solid rgba(34, 197, 94, 0.35)',
+                animation: 'homeMicRipple 2.2s ease-out infinite',
+                pointerEvents: 'none',
               }}
             />
 
@@ -430,85 +446,109 @@ export function HomeScreen({
               aria-label={`${strings.actionSpeak} - ${strings.homeTapToSpeak || strings.pressToSpeak}`}
               style={{
                 position: 'relative',
-                zIndex: 1,
-                width: isWide ? '160px' : '130px',
-                height: isWide ? '160px' : '130px',
+                zIndex: 2,
+                width: isWide ? '186px' : '142px',
+                height: isWide ? '186px' : '142px',
+                minHeight: isWide ? '186px' : '142px',
                 borderRadius: '50%',
-                background: 'linear-gradient(145deg, #22c55e, #15803d)',
-                border: '4px solid rgba(255,255,255,0.3)',
-                color: '#fff',
+                background: 'linear-gradient(145deg, #22c55e 0%, #15803d 100%)',
+                border: '6px solid rgba(255, 255, 255, 0.95)',
+                color: '#ffffff',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '6px',
                 cursor: 'pointer',
-                animation: 'homeMicGlow 3s ease-in-out infinite',
+                boxShadow: '0 0 35px rgba(34, 197, 94, 0.5), 0 16px 40px rgba(21, 128, 61, 0.35)',
+                animation: 'homeMicGlow 3s ease-in-out infinite, homeMicBreathe 4s ease-in-out infinite',
                 transition: 'transform 0.15s ease',
                 touchAction: 'manipulation',
                 userSelect: 'none',
                 WebkitTapHighlightColor: 'transparent',
               }}
             >
-              <span style={{ fontSize: isWide ? '44px' : '36px', lineHeight: 1 }} aria-hidden="true">
+              <span
+                style={{
+                  fontSize: isWide ? '52px' : '40px',
+                  lineHeight: 1,
+                  filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+                }}
+                aria-hidden="true"
+              >
                 🎤
               </span>
-              <span style={{ fontSize: isWide ? '16px' : '13px', fontWeight: 800, textAlign: 'center' }}>
+              <span
+                style={{
+                  fontSize: isWide ? '19px' : '15px',
+                  fontWeight: 800,
+                  textAlign: 'center',
+                  letterSpacing: '0.3px',
+                }}
+              >
                 {strings.actionSpeak}
               </span>
             </button>
-          </div>
 
-          {/* Tap to speak label */}
-          <div
-            style={{
-              marginTop: '12px',
-              fontSize: '14px',
-              fontWeight: 600,
-              color: '#64748b',
-              animation: 'homeFadeInUp 0.6s ease-out 0.6s both',
-            }}
-          >
-            {strings.homeTapToSpeak || strings.pressToSpeak}
+            {/* Tap to speak Glass Badge */}
+            <div
+              style={{
+                marginTop: '10px',
+                fontSize: isWide ? '16px' : '13px',
+                fontWeight: 700,
+                color: '#15803d',
+                background: 'rgba(255, 255, 255, 0.92)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                padding: '6px 18px',
+                borderRadius: '20px',
+                border: '1px solid rgba(21, 128, 61, 0.2)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+                letterSpacing: '-0.2px',
+              }}
+            >
+              {strings.homeTapToSpeak || strings.pressToSpeak}
+            </div>
           </div>
         </div>
 
-        {/* ── Right Action Panel ────────────────────────────────────────────── */}
+        {/* ── Right Action Panel (44–46% width): 2x2 Prominent Action Cards ── */}
         <div
           style={{
-            flex: isWide ? '1 1 50%' : '1 1 auto',
+            flex: isWide ? '0 0 46%' : '1 1 auto',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            padding: isWide ? '24px 36px 24px 24px' : '0',
+            padding: isWide ? '20px 32px 20px 16px' : '12px 16px',
             overflowY: 'auto',
             overflowX: 'hidden',
+            boxSizing: 'border-box',
           }}
         >
-          {/* Section heading */}
+          {/* Action Heading */}
           <div
             style={{
-              marginBottom: '16px',
-              animation: 'homeFadeInUp 0.6s ease-out 0.3s both',
+              marginBottom: isWide ? '18px' : '10px',
+              animation: 'homeFadeInUp 0.6s ease-out 0.25s both',
             }}
           >
             <h2
               style={{
-                fontSize: isWide ? '26px' : '22px',
+                fontSize: isWide ? '32px' : '22px',
                 fontWeight: 800,
                 color: '#1e3a5f',
                 margin: 0,
                 marginBottom: '4px',
-                letterSpacing: '-0.3px',
+                letterSpacing: '-0.5px',
               }}
             >
               {strings.howCanWeHelp}
             </h2>
             <p
               style={{
-                fontSize: '14px',
+                fontSize: isWide ? '16px' : '13px',
                 fontWeight: 500,
-                color: '#64748b',
+                color: '#475569',
                 margin: 0,
               }}
             >
@@ -516,13 +556,14 @@ export function HomeScreen({
             </p>
           </div>
 
-          {/* 2×2 Action Card Grid */}
+          {/* 2x2 Action Card Grid (Card height ~180-210px on 1280x800) */}
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: isWide ? 'repeat(2, 1fr)' : 'repeat(2, 1fr)',
-              gap: isWide ? '14px' : '12px',
-              maxWidth: '520px',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: isWide ? '16px' : '10px',
+              width: '100%',
+              maxWidth: '560px',
             }}
           >
             {cards.map((card, i) => (
@@ -532,25 +573,28 @@ export function HomeScreen({
                 strings={strings}
                 index={i}
                 isWide={isWide}
+                isCompact={isCompact}
               />
             ))}
           </div>
         </div>
       </main>
 
-      {/* ═══════════════ BOTTOM INFO STRIP ═══════════════ */}
+      {/* ═══════════════ BOTTOM DECORATIVE STRIP ═══════════════ */}
       <div
         style={{
           display: 'flex',
           justifyContent: 'center',
-          gap: isWide ? '32px' : '16px',
+          alignItems: 'center',
+          gap: isWide ? '36px' : '16px',
           padding: '10px 24px',
-          background: 'rgba(255,255,255,0.6)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
-          borderTop: '1px solid rgba(21,128,61,0.08)',
+          background: 'linear-gradient(90deg, rgba(21,128,61,0.09) 0%, rgba(255,255,255,0.92) 50%, rgba(234,88,12,0.09) 100%)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderTop: '1.5px solid rgba(21,128,61,0.15)',
           flexShrink: 0,
           flexWrap: 'wrap',
+          zIndex: 10,
         }}
       >
         {infoItems.map((item) => (
@@ -559,35 +603,36 @@ export function HomeScreen({
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              fontSize: '13px',
-              fontWeight: 600,
-              color: '#475569',
+              gap: '8px',
+              fontSize: isWide ? '14px' : '12px',
+              fontWeight: 700,
+              color: '#334155',
             }}
           >
-            <span aria-hidden="true">{item.icon}</span>
+            <span style={{ fontSize: '16px' }} aria-hidden="true">{item.icon}</span>
             <span>{String(strings[item.textKey] || item.textKey)}</span>
           </div>
         ))}
       </div>
 
-      {/* ═══════════════ FOOTER ═══════════════ */}
+      {/* ═══════════════ COMPACT FOOTER ═══════════════ */}
       <footer
         style={{
           textAlign: 'center',
-          padding: '8px 24px',
+          padding: '6px 24px',
           fontSize: '12px',
           fontWeight: 600,
-          color: '#94a3b8',
-          background: 'rgba(255,255,255,0.4)',
+          color: '#64748b',
+          background: 'rgba(255,255,255,0.75)',
           flexShrink: 0,
-          letterSpacing: '0.3px',
+          letterSpacing: '0.2px',
+          borderTop: '1px solid rgba(0,0,0,0.04)',
         }}
       >
         {strings.homeCoopFooter || 'Stronger Cooperatives, A Brighter India'} • {strings.kioskSubtitle}
       </footer>
 
-      {/* 58mm Thermal Printable Slip (styled by @media print) */}
+      {/* 58mm Thermal Printable Slip */}
       <AssistanceSlip slip={activeSlip} />
     </div>
   );
@@ -600,11 +645,13 @@ function ActionCard({
   strings,
   index,
   isWide,
+  isCompact,
 }: {
   card: ActionCardConfig;
   strings: KioskStrings;
   index: number;
   isWide: boolean;
+  isCompact: boolean;
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -627,111 +674,115 @@ function ActionCard({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
-        gap: '8px',
-        padding: isWide ? '18px 20px' : '14px 16px',
-        minHeight: isWide ? '110px' : '96px',
+        justifyContent: 'space-between',
+        padding: isWide ? '20px 22px' : '14px 16px',
+        minHeight: isWide ? '180px' : isCompact ? '110px' : '140px',
         background: isHovered
-          ? 'rgba(255,255,255,0.95)'
-          : 'rgba(255,255,255,0.75)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        border: `1.5px solid ${isHovered ? card.accent + '40' : 'rgba(255,255,255,0.5)'}`,
-        borderRadius: '18px',
+          ? 'rgba(255,255,255,0.98)'
+          : 'rgba(255,255,255,0.88)',
+        backdropFilter: 'blur(18px)',
+        WebkitBackdropFilter: 'blur(18px)',
+        border: `2px solid ${isHovered ? card.accent : 'rgba(255,255,255,0.9)'}`,
+        borderRadius: '26px',
         boxShadow: isHovered
-          ? `0 8px 28px rgba(0,0,0,0.08), 0 0 0 1px ${card.accent}15`
-          : '0 2px 12px rgba(0,0,0,0.04)',
+          ? `0 14px 34px rgba(0,0,0,0.10), 0 0 0 2px ${card.accent}25`
+          : '0 8px 24px rgba(0,0,0,0.05)',
         cursor: 'pointer',
         textAlign: 'left',
-        transition: 'all 0.18s ease',
-        transform: isPressed ? 'scale(0.97)' : isHovered ? 'translateY(-2px)' : 'none',
-        animation: `homeCardStagger 0.5s ease-out ${0.4 + index * 0.1}s both`,
+        transition: 'all 0.18s cubic-bezier(0.4, 0, 0.2, 1)',
+        transform: isPressed ? 'scale(0.97)' : isHovered ? 'translateY(-3px)' : 'none',
+        animation: `homeCardStagger 0.5s ease-out ${0.35 + index * 0.08}s both`,
         touchAction: 'manipulation',
         userSelect: 'none',
         WebkitTapHighlightColor: 'transparent',
         position: 'relative',
         overflow: 'hidden',
+        boxSizing: 'border-box',
       }}
     >
-      {/* Icon badge */}
+      {/* Top row: Icon badge + Action tag */}
       <div
         style={{
-          width: '40px',
-          height: '40px',
-          borderRadius: '12px',
-          background: card.accentBg,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '22px',
-          flexShrink: 0,
+          justifyContent: 'space-between',
+          width: '100%',
         }}
-        aria-hidden="true"
       >
-        {card.icon}
-      </div>
-
-      {/* Text */}
-      <div style={{ flex: 1, width: '100%' }}>
         <div
           style={{
+            width: isWide ? '52px' : '42px',
+            height: isWide ? '52px' : '42px',
+            borderRadius: '16px',
+            background: card.accentBg,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '8px',
-            marginBottom: '3px',
+            justifyContent: 'center',
+            fontSize: isWide ? '28px' : '22px',
+            flexShrink: 0,
+            border: `1px solid ${card.accent}30`,
           }}
+          aria-hidden="true"
         >
+          {card.icon}
+        </div>
+
+        {actionLabel && (
           <span
             style={{
-              fontSize: isWide ? '16px' : '14px',
+              fontSize: '12px',
               fontWeight: 700,
-              color: '#1e3a5f',
-              lineHeight: 1.2,
+              color: card.accent,
+              backgroundColor: card.accentBg,
+              padding: '3px 10px',
+              borderRadius: '8px',
+              border: `1.5px solid ${card.accent}35`,
+              whiteSpace: 'nowrap',
+              letterSpacing: '-0.2px',
             }}
           >
-            {title}
+            {actionLabel}
           </span>
-          {actionLabel && (
-            <span
-              style={{
-                fontSize: '11px',
-                fontWeight: 700,
-                color: card.accent,
-                backgroundColor: card.accentBg,
-                padding: '2px 8px',
-                borderRadius: '6px',
-                border: `1px solid ${card.accent}30`,
-                whiteSpace: 'nowrap',
-                marginRight: '16px',
-              }}
-            >
-              {actionLabel}
-            </span>
-          )}
+        )}
+      </div>
+
+      {/* Middle: Title & Subtitle */}
+      <div style={{ width: '100%', marginTop: '10px' }}>
+        <div
+          style={{
+            fontSize: isWide ? '22px' : '16px',
+            fontWeight: 800,
+            color: '#1e3a5f',
+            marginBottom: '4px',
+            lineHeight: 1.2,
+            letterSpacing: '-0.3px',
+          }}
+        >
+          {title}
         </div>
         <div
           style={{
-            fontSize: isWide ? '12px' : '11px',
+            fontSize: isWide ? '15px' : '12px',
             fontWeight: 500,
             color: '#64748b',
-            lineHeight: 1.3,
+            lineHeight: 1.35,
           }}
         >
           {desc}
         </div>
       </div>
 
-      {/* Arrow */}
+      {/* Bottom row: Right Arrow */}
       <div
         style={{
-          position: 'absolute',
-          right: '16px',
-          top: '50%',
-          transform: `translateY(-50%) translateX(${isHovered ? '0' : '-4px'})`,
-          opacity: isHovered ? 0.6 : 0.25,
-          fontSize: '16px',
+          alignSelf: 'flex-end',
+          fontSize: '20px',
+          fontWeight: 700,
           color: card.accent,
+          opacity: isHovered ? 1 : 0.45,
+          transform: isHovered ? 'translateX(4px)' : 'none',
           transition: 'all 0.18s ease',
+          lineHeight: 1,
         }}
         aria-hidden="true"
       >
