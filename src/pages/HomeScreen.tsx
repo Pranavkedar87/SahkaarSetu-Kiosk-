@@ -54,13 +54,67 @@ export interface HomeScreenProps {
 
 interface ActionCardConfig {
   key: string;
-  icon: string;
+  icon: (color: string, size: number) => React.ReactNode;
   titleKey: keyof KioskStrings;
   descKey: keyof KioskStrings;
   actionKey?: keyof KioskStrings;
   accent: string;
   accentBg: string;
   onClick: () => void;
+}
+
+// ── Action Card Vector SVG Icons (replacing emojis) ───────────────────────────
+
+function VoiceSvgIcon({ color, size = 26 }: { color: string; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="9" y="2" width="6" height="12" rx="3" fill={`${color}22`} />
+      <path d="M5 10v1a7 7 0 0 0 14 0v-1" />
+      <line x1="12" y1="18" x2="12" y2="22" />
+      <line x1="8" y1="22" x2="16" y2="22" />
+    </svg>
+  );
+}
+
+function TypeSvgIcon({ color, size = 26 }: { color: string; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="4" width="20" height="16" rx="4" fill={`${color}16`} />
+      <circle cx="6" cy="8" r="1" fill={color} />
+      <circle cx="10" cy="8" r="1" fill={color} />
+      <circle cx="14" cy="8" r="1" fill={color} />
+      <circle cx="18" cy="8" r="1" fill={color} />
+      <circle cx="6" cy="12" r="1" fill={color} />
+      <circle cx="10" cy="12" r="1" fill={color} />
+      <circle cx="14" cy="12" r="1" fill={color} />
+      <circle cx="18" cy="12" r="1" fill={color} />
+      <line x1="7" y1="16" x2="17" y2="16" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ScanSvgIcon({ color, size = 26 }: { color: string; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 8V5a2 2 0 0 1 2-2h3" />
+      <path d="M15 3h3a2 2 0 0 1 2 2v3" />
+      <path d="M20 16v3a2 2 0 0 1-2 2h-3" />
+      <path d="M9 21H6a2 2 0 0 1-2-2v-3" />
+      <path d="M8 8h8a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z" fill={`${color}18`} />
+      <line x1="7" y1="12" x2="17" y2="12" strokeDasharray="2 2" />
+    </svg>
+  );
+}
+
+function PacsSvgIcon({ color, size = 26 }: { color: string; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" fill={`${color}20`} />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
 }
 
 // ── Responsive width hook ──────────────────────────────────────────────────────
@@ -200,7 +254,7 @@ export function HomeScreen({
   const cards: ActionCardConfig[] = [
     {
       key: 'voice',
-      icon: '🎤',
+      icon: (color, size) => <VoiceSvgIcon color={color} size={size} />,
       titleKey: 'homeAskByVoice',
       descKey: 'homeAskByVoiceDesc',
       accent: '#15803d',
@@ -209,7 +263,7 @@ export function HomeScreen({
     },
     {
       key: 'type',
-      icon: '⌨️',
+      icon: (color, size) => <TypeSvgIcon color={color} size={size} />,
       titleKey: 'homeTypeQuestion',
       descKey: 'homeTypeQuestionDesc',
       actionKey: 'actionType',
@@ -219,7 +273,7 @@ export function HomeScreen({
     },
     {
       key: 'scan',
-      icon: '📄',
+      icon: (color, size) => <ScanSvgIcon color={color} size={size} />,
       titleKey: 'homeScanDocument',
       descKey: 'homeScanDocumentDesc',
       accent: '#ea580c',
@@ -228,7 +282,7 @@ export function HomeScreen({
     },
     {
       key: 'pacs',
-      icon: '🤝',
+      icon: (color, size) => <PacsSvgIcon color={color} size={size} />,
       titleKey: 'homePacsAssistance',
       descKey: 'homePacsAssistanceDesc',
       actionKey: 'actionHelpPacs',
@@ -238,11 +292,36 @@ export function HomeScreen({
     },
   ];
 
-  // 3 Trust indicators
+  // 3 Trust indicators (clean vector SVG icons)
   const infoItems = [
-    { icon: '🌾', textKey: 'homeFarmerFriendly' as keyof KioskStrings },
-    { icon: '✓', textKey: 'homeTrustedInfo' as keyof KioskStrings },
-    { icon: '🌱', textKey: 'homeBrighterTomorrow' as keyof KioskStrings },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803d" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 22 12 12" />
+          <path d="M11 2a8 8 0 0 0-8 8v12" />
+          <path d="M22 11a8 8 0 0 0-8-8v12" />
+        </svg>
+      ),
+      textKey: 'homeFarmerFriendly' as keyof KioskStrings,
+    },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      ),
+      textKey: 'homeTrustedInfo' as keyof KioskStrings,
+    },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 10v12" />
+          <path d="M12 10a5 5 0 0 1 5-5h2a5 5 0 0 1-5 5" />
+          <path d="M12 14a5 5 0 0 0-5-5H5a5 5 0 0 0 5 5" />
+        </svg>
+      ),
+      textKey: 'homeBrighterTomorrow' as keyof KioskStrings,
+    },
   ];
 
   return (
@@ -565,13 +644,39 @@ export function HomeScreen({
               >
                 <span
                   style={{
-                    fontSize: isWide ? '46px' : '36px',
-                    lineHeight: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
                   }}
                   aria-hidden="true"
                 >
-                  {resolvedState === 'listening' ? '🎙️' : resolvedState === 'thinking' ? '⚙️' : resolvedState === 'speaking' ? '🔊' : '🎤'}
+                  {resolvedState === 'listening' ? (
+                    <svg width={isWide ? 44 : 34} height={isWide ? 44 : 34} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="9" y="2" width="6" height="12" rx="3" fill="rgba(255,255,255,0.3)" />
+                      <path d="M5 10v1a7 7 0 0 0 14 0v-1" />
+                      <line x1="12" y1="18" x2="12" y2="22" />
+                      <line x1="8" y1="22" x2="16" y2="22" />
+                    </svg>
+                  ) : resolvedState === 'thinking' ? (
+                    <svg width={isWide ? 44 : 34} height={isWide ? 44 : 34} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1.5s linear infinite' }}>
+                      <circle cx="12" cy="12" r="3" />
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                    </svg>
+                  ) : resolvedState === 'speaking' ? (
+                    <svg width={isWide ? 44 : 34} height={isWide ? 44 : 34} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="rgba(255,255,255,0.3)" />
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                    </svg>
+                  ) : (
+                    <svg width={isWide ? 44 : 34} height={isWide ? 44 : 34} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="9" y="2" width="6" height="12" rx="3" fill="rgba(255,255,255,0.3)" />
+                      <path d="M5 10v1a7 7 0 0 0 14 0v-1" />
+                      <line x1="12" y1="18" x2="12" y2="22" />
+                      <line x1="8" y1="22" x2="16" y2="22" />
+                    </svg>
+                  )}
                 </span>
                 <span
                   style={{
@@ -859,7 +964,7 @@ function ActionCard({
           }}
           aria-hidden="true"
         >
-          {card.icon}
+          {card.icon(card.accent, isWide ? 28 : 22)}
         </div>
 
         {actionLabel && (
