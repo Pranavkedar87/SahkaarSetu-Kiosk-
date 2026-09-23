@@ -35,6 +35,9 @@ interface Props {
   onStopAudio?: () => void;
   className?: string;
   style?: React.CSSProperties;
+  isMobile?: boolean;
+  awaitingClarificationGesture?: boolean;
+  onClarificationTap?: () => void;
 }
 
 export function SahkaarSetuAssistant({
@@ -49,6 +52,9 @@ export function SahkaarSetuAssistant({
   onStopAudio,
   className,
   style,
+  isMobile = false,
+  awaitingClarificationGesture = false,
+  onClarificationTap,
 }: Props) {
   // Natural blinking cycle: random intervals between 2.5s and 4.8s
   const [isBlinking, setIsBlinking] = useState(false);
@@ -219,8 +225,8 @@ export function SahkaarSetuAssistant({
           textAlign: 'center',
           boxShadow: '0 12px 36px rgba(0, 0, 0, 0.10)',
           marginBottom: '10px',
-          maxWidth: '410px',
-          width: '94%',
+          maxWidth: isMobile ? '92vw' : '410px',
+          width: isMobile ? '92%' : '94%',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
@@ -405,6 +411,57 @@ export function SahkaarSetuAssistant({
           </div>
         )}
 
+        {/* Clarification Fallback (when browser blocks auto-listen without user gesture) */}
+        {awaitingClarificationGesture && (
+          <div
+            data-testid="assistant-clarification-fallback"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '6px',
+              marginTop: '10px',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '13px',
+                fontWeight: 700,
+                color: '#15803d',
+              }}
+            >
+              {strings.clarificationReady || 'Ready for your answer'}
+            </div>
+            {onClarificationTap && (
+              <button
+                type="button"
+                onClick={onClarificationTap}
+                aria-label={strings.clarificationTapToAnswer || 'Tap to answer'}
+                style={{
+                  height: '42px',
+                  minHeight: '42px',
+                  padding: '0 18px',
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #22c55e 0%, #15803d 100%)',
+                  color: '#ffffff',
+                  border: 'none',
+                  fontSize: '13px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 4px 14px rgba(21, 128, 61, 0.25)',
+                  touchAction: 'manipulation',
+                }}
+              >
+                <span>🎤</span>
+                <span>{strings.clarificationTapToAnswer || 'Tap to answer'}</span>
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Speech bubble tail pointing to assistant */}
         <div
           aria-hidden="true"
@@ -426,12 +483,13 @@ export function SahkaarSetuAssistant({
         style={{
           position: 'relative',
           width: '100%',
-          maxWidth: '350px',
-          height: '330px',
+          maxWidth: isMobile ? '280px' : '350px',
+          height: isMobile ? '260px' : '330px',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'flex-end',
           overflow: 'visible',
+          transition: 'max-width 0.3s ease, height 0.3s ease',
         }}
       >
         {/* Soft Ambient State Glow */}

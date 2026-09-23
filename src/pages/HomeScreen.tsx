@@ -163,6 +163,7 @@ export function HomeScreen({
   const width = useWindowWidth();
   const now = useClock();
   const isWide = width >= 1024;
+  const isMobile = width <= 768;
   const isCompact = width <= 820;
 
   // Real voice interaction engine (inline on HomeScreen, zero redirect)
@@ -199,6 +200,10 @@ export function HomeScreen({
   // Inline microphone trigger (zero navigation away from Home)
   const handleMainMicClick = async () => {
     onSpeak?.();
+    if (voice.awaitingClarificationGesture) {
+      await voice.startListeningForClarification();
+      return;
+    }
     if (resolvedState === 'idle') {
       await voice.startListening();
     } else if (resolvedState === 'listening') {
@@ -326,12 +331,15 @@ export function HomeScreen({
 
   return (
     <div
+      className="kiosk-home-container"
       style={{
-        width: '100vw',
-        height: '100vh',
+        width: '100%',
+        minHeight: isMobile ? '100dvh' : '100vh',
+        height: isMobile ? 'auto' : '100vh',
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'hidden',
+        overflowY: isMobile ? 'auto' : 'hidden',
+        overflowX: 'hidden',
         boxSizing: 'border-box',
         background: 'linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 30%, #fff7ed 70%, #fef3c7 100%)',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -339,12 +347,16 @@ export function HomeScreen({
     >
       {/* ═══════════════ HEADER BAR ═══════════════ */}
       <header
+        className="kiosk-home-header"
         style={{
           display: 'flex',
-          alignItems: 'center',
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: isMobile ? 'stretch' : 'center',
           justifyContent: 'space-between',
-          padding: '8px 24px',
-          height: '64px',
+          padding: isMobile ? '10px 14px' : '8px 24px',
+          height: isMobile ? 'auto' : '64px',
+          minHeight: isMobile ? 'auto' : '64px',
+          gap: isMobile ? '10px' : '14px',
           flexShrink: 0,
           background: 'rgba(255,255,255,0.92)',
           backdropFilter: 'blur(16px)',
@@ -353,21 +365,50 @@ export function HomeScreen({
           zIndex: 20,
         }}
       >
-        {/* Left: Brand Identity */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <img
-            src={logoSrc}
-            alt="SahkaarSetu Logo"
-            style={{ height: '42px', width: '42px', objectFit: 'contain' }}
-          />
-          <div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#15803d', lineHeight: 1.1, letterSpacing: '-0.3px' }}>
-              {strings.brandName}
-            </div>
-            <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>
-              {strings.tagline}
+        {/* Row 1 on mobile: Brand on left, Time + Connectivity on right */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: isMobile ? '100%' : 'auto', gap: '12px' }}>
+          {/* Brand Identity */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '10px' : '12px' }}>
+            <img
+              src={logoSrc}
+              alt="SahkaarSetu Logo"
+              style={{ height: isMobile ? '36px' : '42px', width: isMobile ? '36px' : '42px', objectFit: 'contain' }}
+            />
+            <div>
+              <div style={{ fontSize: isMobile ? '18px' : '20px', fontWeight: 800, color: '#15803d', lineHeight: 1.1, letterSpacing: '-0.3px' }}>
+                {strings.brandName}
+              </div>
+              <div style={{ fontSize: isMobile ? '10px' : '11px', color: '#64748b', fontWeight: 600 }}>
+                {strings.tagline}
+              </div>
             </div>
           </div>
+
+          {/* If mobile, show Time & Connectivity in Row 1 */}
+          {isMobile && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ textAlign: 'right', lineHeight: 1.15 }}>
+                <div data-testid="clock-time" style={{ fontSize: '13px', fontWeight: 700, color: '#1e3a5f' }}>
+                  {timeStr}
+                </div>
+                <div data-testid="clock-date" style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>
+                  {dateStr}
+                </div>
+              </div>
+              <div
+                data-testid="connectivity-indicator"
+                title={isOnline ? 'Online' : 'Offline'}
+                style={{
+                  width: '9px',
+                  height: '9px',
+                  borderRadius: '50%',
+                  backgroundColor: isOnline ? '#22c55e' : '#ef4444',
+                  boxShadow: `0 0 6px ${isOnline ? 'rgba(34,197,94,0.6)' : 'rgba(239,68,68,0.6)'}`,
+                  flexShrink: 0,
+                }}
+              />
+            </div>
+          )}
         </div>
 
         {/* Center: Quote (wide screens) */}
@@ -389,52 +430,67 @@ export function HomeScreen({
           </div>
         )}
 
-        {/* Right: Connectivity + Time + Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          {/* Time & Date */}
-          <div style={{ textAlign: 'right', lineHeight: 1.2 }}>
-            <div data-testid="clock-time" style={{ fontSize: '15px', fontWeight: 700, color: '#1e3a5f' }}>
-              {timeStr}
-            </div>
-            <div data-testid="clock-date" style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>
-              {dateStr}
-            </div>
-          </div>
+        {/* Controls: On desktop (time + connectivity + buttons); On mobile (Row 2 full-width buttons) */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: isMobile ? '8px' : '14px',
+            width: isMobile ? '100%' : 'auto',
+            justifyContent: isMobile ? 'stretch' : 'flex-end',
+          }}
+        >
+          {!isMobile && (
+            <>
+              {/* Time & Date */}
+              <div style={{ textAlign: 'right', lineHeight: 1.2 }}>
+                <div data-testid="clock-time" style={{ fontSize: '15px', fontWeight: 700, color: '#1e3a5f' }}>
+                  {timeStr}
+                </div>
+                <div data-testid="clock-date" style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>
+                  {dateStr}
+                </div>
+              </div>
 
-          {/* Connectivity Indicator */}
-          <div
-            data-testid="connectivity-indicator"
-            title={isOnline ? 'Online' : 'Offline'}
-            style={{
-              width: '10px',
-              height: '10px',
-              borderRadius: '50%',
-              backgroundColor: isOnline ? '#22c55e' : '#ef4444',
-              boxShadow: `0 0 8px ${isOnline ? 'rgba(34,197,94,0.6)' : 'rgba(239,68,68,0.6)'}`,
-              flexShrink: 0,
-            }}
-          />
+              {/* Connectivity Indicator */}
+              <div
+                data-testid="connectivity-indicator"
+                title={isOnline ? 'Online' : 'Offline'}
+                style={{
+                  width: '10px',
+                  height: '10px',
+                  borderRadius: '50%',
+                  backgroundColor: isOnline ? '#22c55e' : '#ef4444',
+                  boxShadow: `0 0 8px ${isOnline ? 'rgba(34,197,94,0.6)' : 'rgba(239,68,68,0.6)'}`,
+                  flexShrink: 0,
+                }}
+              />
+            </>
+          )}
 
           {/* Language Selector */}
           <button
             onClick={onChangeLanguage}
             aria-label={strings.changeLanguage}
             style={{
+              flex: isMobile ? 1 : 'none',
               height: '48px',
               minHeight: '48px',
-              padding: '0 16px',
+              padding: isMobile ? '0 10px' : '0 16px',
               background: 'rgba(21,128,61,0.08)',
               color: '#15803d',
               border: '2px solid rgba(21,128,61,0.25)',
               borderRadius: '12px',
-              fontSize: '14px',
+              fontSize: isMobile ? '13px' : '14px',
               fontWeight: 700,
               cursor: 'pointer',
               whiteSpace: 'nowrap',
               touchAction: 'manipulation',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: '6px',
+              boxSizing: 'border-box',
             }}
           >
             <span>🌐</span>
@@ -446,21 +502,24 @@ export function HomeScreen({
             onClick={handleStartOverClick}
             aria-label={strings.promptStartOver}
             style={{
+              flex: isMobile ? 1 : 'none',
               height: '48px',
               minHeight: '48px',
-              padding: '0 16px',
+              padding: isMobile ? '0 10px' : '0 16px',
               background: 'rgba(220,38,38,0.06)',
               color: '#dc2626',
               border: '2px solid rgba(220,38,38,0.25)',
               borderRadius: '12px',
-              fontSize: '14px',
+              fontSize: isMobile ? '13px' : '14px',
               fontWeight: 700,
               cursor: 'pointer',
               whiteSpace: 'nowrap',
               touchAction: 'manipulation',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: '6px',
+              boxSizing: 'border-box',
             }}
           >
             <span>↩</span>
@@ -478,26 +537,28 @@ export function HomeScreen({
 
       {/* ═══════════════ MAIN VIEWPORT ═══════════════ */}
       <main
+        className="kiosk-home-main"
         style={{
-          flex: 1,
+          flex: isMobile ? '0 0 auto' : 1,
           display: 'flex',
           flexDirection: isWide ? 'row' : 'column',
-          overflow: 'hidden',
+          overflow: isMobile ? 'visible' : 'hidden',
           position: 'relative',
         }}
       >
         {/* ── Left Hero Panel (54–56% width): Animated Assistant + Mic ── */}
         <div
+          className="kiosk-hero-panel"
           style={{
             flex: isWide ? '0 0 54%' : '0 0 auto',
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: isWide ? '16px 28px 18px' : '12px 16px',
+            justifyContent: isMobile ? 'flex-start' : 'space-between',
+            padding: isWide ? '16px 28px 18px' : isMobile ? '12px 14px 18px' : '12px 16px',
             overflow: 'hidden',
-            minHeight: isWide ? 'auto' : '360px',
+            minHeight: isWide ? 'auto' : isMobile ? 'auto' : '360px',
           }}
         >
           {/* Rural Maharashtra Hero Assistant Background Image */}
@@ -547,6 +608,9 @@ export function HomeScreen({
               isAudioPlaying={voice.isPlaying}
               onPlayAgain={voice.replayAudio}
               onStopAudio={voice.stopAudio}
+              isMobile={isMobile}
+              awaitingClarificationGesture={voice.awaitingClarificationGesture}
+              onClarificationTap={voice.startListeningForClarification}
             />
           </div>
 
@@ -625,6 +689,8 @@ export function HomeScreen({
                       ? 'linear-gradient(145deg, #0284c7 0%, #0369a1 100%)'
                       : resolvedState === 'speaking'
                       ? 'linear-gradient(145deg, #f97316 0%, #c2410c 100%)'
+                      : voice.awaitingClarificationGesture
+                      ? 'linear-gradient(145deg, #f59e0b 0%, #d97706 100%)'
                       : 'linear-gradient(145deg, #22c55e 0%, #15803d 100%)',
                   border: '5px solid rgba(255, 255, 255, 0.95)',
                   color: '#ffffff',
@@ -634,7 +700,9 @@ export function HomeScreen({
                   justifyContent: 'center',
                   gap: '4px',
                   cursor: 'pointer',
-                  boxShadow: '0 0 35px rgba(34, 197, 94, 0.5), 0 16px 40px rgba(21, 128, 61, 0.35)',
+                  boxShadow: voice.awaitingClarificationGesture
+                    ? '0 0 35px rgba(245, 158, 11, 0.5), 0 16px 40px rgba(217, 119, 6, 0.35)'
+                    : '0 0 35px rgba(34, 197, 94, 0.5), 0 16px 40px rgba(21, 128, 61, 0.35)',
                   animation: 'homeMicGlow 3s ease-in-out infinite, homeMicBreathe 4s ease-in-out infinite',
                   transition: 'transform 0.15s ease, background 0.3s ease',
                   touchAction: 'manipulation',
@@ -686,7 +754,9 @@ export function HomeScreen({
                     letterSpacing: '0.3px',
                   }}
                 >
-                  {resolvedState === 'thinking'
+                  {voice.awaitingClarificationGesture
+                    ? (strings.clarificationTapToAnswer || 'Tap to Answer')
+                    : resolvedState === 'thinking'
                     ? strings.stateProcessing || 'Processing'
                     : resolvedState === 'speaking'
                     ? strings.voiceStopAudio || 'Stop'
@@ -700,19 +770,21 @@ export function HomeScreen({
                   marginTop: '8px',
                   fontSize: isWide ? '14px' : '12px',
                   fontWeight: 700,
-                  color: resolvedState === 'listening' ? '#047857' : '#15803d',
+                  color: voice.awaitingClarificationGesture ? '#d97706' : resolvedState === 'listening' ? '#047857' : '#15803d',
                   background: 'rgba(255, 255, 255, 0.92)',
                   backdropFilter: 'blur(12px)',
                   WebkitBackdropFilter: 'blur(12px)',
                   padding: '4px 16px',
                   borderRadius: '20px',
-                  border: '1px solid rgba(21, 128, 61, 0.2)',
+                  border: voice.awaitingClarificationGesture ? '1.5px solid rgba(245, 158, 11, 0.4)' : '1px solid rgba(21, 128, 61, 0.2)',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
                   letterSpacing: '-0.2px',
                   whiteSpace: 'nowrap',
                 }}
               >
-                {resolvedState === 'listening'
+                {voice.awaitingClarificationGesture
+                  ? (strings.clarificationReady || 'Ready for your answer')
+                  : resolvedState === 'listening'
                   ? strings.voiceTapToStop || 'Tap to finish speaking'
                   : resolvedState === 'thinking'
                   ? strings.assistantThinking || 'Thinking...'
@@ -752,15 +824,16 @@ export function HomeScreen({
           </div>
         </div>
 
-        {/* ── Right Action Panel (44–46% width): 2x2 Prominent Action Cards ── */}
+        {/* ── Right Action Panel (44–46% width): Prominent Action Cards ── */}
         <div
+          className="kiosk-action-panel"
           style={{
-            flex: isWide ? '0 0 46%' : '1 1 auto',
+            flex: isWide ? '0 0 46%' : isMobile ? '0 0 auto' : '1 1 auto',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
-            padding: isWide ? '20px 32px 20px 16px' : '12px 16px',
-            overflowY: 'auto',
+            justifyContent: isMobile ? 'flex-start' : 'center',
+            padding: isWide ? '20px 32px 20px 16px' : isMobile ? '16px 14px 20px' : '12px 16px',
+            overflowY: isMobile ? 'visible' : 'auto',
             overflowX: 'hidden',
             boxSizing: 'border-box',
           }}
@@ -774,7 +847,7 @@ export function HomeScreen({
           >
             <h2
               style={{
-                fontSize: isWide ? '32px' : '22px',
+                fontSize: isWide ? '32px' : isMobile ? '20px' : '22px',
                 fontWeight: 800,
                 color: '#1e3a5f',
                 margin: 0,
@@ -786,7 +859,7 @@ export function HomeScreen({
             </h2>
             <p
               style={{
-                fontSize: isWide ? '16px' : '13px',
+                fontSize: isWide ? '16px' : isMobile ? '12px' : '13px',
                 fontWeight: 500,
                 color: '#475569',
                 margin: 0,
@@ -796,14 +869,15 @@ export function HomeScreen({
             </p>
           </div>
 
-          {/* 2x2 Action Card Grid (Card height ~180-210px on 1280x800) */}
+          {/* Action Card Grid (1 col on narrow mobile <= 600px, 2 col otherwise) */}
           <div
+            className="kiosk-action-grid"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
+              gridTemplateColumns: width <= 600 ? '1fr' : 'repeat(2, 1fr)',
               gap: isWide ? '16px' : '10px',
               width: '100%',
-              maxWidth: '560px',
+              maxWidth: isMobile ? '100%' : '560px',
             }}
           >
             {cards.map((card, i) => (
@@ -814,6 +888,7 @@ export function HomeScreen({
                 index={i}
                 isWide={isWide}
                 isCompact={isCompact}
+                isMobile={isMobile}
               />
             ))}
           </div>
@@ -822,12 +897,13 @@ export function HomeScreen({
 
       {/* ═══════════════ BOTTOM DECORATIVE STRIP ═══════════════ */}
       <div
+        className="kiosk-bottom-strip"
         style={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          gap: isWide ? '36px' : '16px',
-          padding: '10px 24px',
+          gap: isWide ? '36px' : isMobile ? '14px' : '16px',
+          padding: isMobile ? '12px 14px' : '10px 24px',
           background: 'linear-gradient(90deg, rgba(21,128,61,0.09) 0%, rgba(255,255,255,0.92) 50%, rgba(234,88,12,0.09) 100%)',
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
@@ -857,10 +933,11 @@ export function HomeScreen({
 
       {/* ═══════════════ COMPACT FOOTER ═══════════════ */}
       <footer
+        className="kiosk-footer"
         style={{
           textAlign: 'center',
-          padding: '6px 24px',
-          fontSize: '12px',
+          padding: isMobile ? '10px 14px 18px' : '6px 24px',
+          fontSize: isMobile ? '11px' : '12px',
           fontWeight: 600,
           color: '#64748b',
           background: 'rgba(255,255,255,0.75)',
@@ -886,12 +963,14 @@ function ActionCard({
   index,
   isWide,
   isCompact,
+  isMobile,
 }: {
   card: ActionCardConfig;
   strings: KioskStrings;
   index: number;
   isWide: boolean;
   isCompact: boolean;
+  isMobile?: boolean;
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -912,18 +991,18 @@ function ActionCard({
       onPointerCancel={() => setIsPressed(false)}
       style={{
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
+        flexDirection: isMobile ? 'row' : 'column',
+        alignItems: isMobile ? 'center' : 'flex-start',
         justifyContent: 'space-between',
-        padding: isWide ? '20px 22px' : '14px 16px',
-        minHeight: isWide ? '180px' : isCompact ? '110px' : '140px',
+        padding: isWide ? '20px 22px' : isMobile ? '14px 18px' : '14px 16px',
+        minHeight: isWide ? '180px' : isMobile ? '80px' : isCompact ? '110px' : '140px',
         background: isHovered
           ? 'rgba(255,255,255,0.98)'
           : 'rgba(255,255,255,0.88)',
         backdropFilter: 'blur(18px)',
         WebkitBackdropFilter: 'blur(18px)',
         border: `2px solid ${isHovered ? card.accent : 'rgba(255,255,255,0.9)'}`,
-        borderRadius: '26px',
+        borderRadius: isMobile ? '18px' : '26px',
         boxShadow: isHovered
           ? `0 14px 34px rgba(0,0,0,0.10), 0 0 0 2px ${card.accent}25`
           : '0 8px 24px rgba(0,0,0,0.05)',
@@ -938,62 +1017,36 @@ function ActionCard({
         position: 'relative',
         overflow: 'hidden',
         boxSizing: 'border-box',
+        gap: isMobile ? '12px' : '0px',
       }}
     >
-      {/* Top row: Icon badge + Action tag */}
+      {/* Icon badge */}
       <div
         style={{
+          width: isWide ? '52px' : isMobile ? '44px' : '42px',
+          height: isWide ? '52px' : isMobile ? '44px' : '42px',
+          borderRadius: '16px',
+          background: card.accentBg,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
+          justifyContent: 'center',
+          fontSize: isWide ? '28px' : '22px',
+          flexShrink: 0,
+          border: `1px solid ${card.accent}30`,
         }}
+        aria-hidden="true"
       >
-        <div
-          style={{
-            width: isWide ? '52px' : '42px',
-            height: isWide ? '52px' : '42px',
-            borderRadius: '16px',
-            background: card.accentBg,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: isWide ? '28px' : '22px',
-            flexShrink: 0,
-            border: `1px solid ${card.accent}30`,
-          }}
-          aria-hidden="true"
-        >
-          {card.icon(card.accent, isWide ? 28 : 22)}
-        </div>
-
-        {actionLabel && (
-          <span
-            style={{
-              fontSize: '12px',
-              fontWeight: 700,
-              color: card.accent,
-              backgroundColor: card.accentBg,
-              padding: '3px 10px',
-              borderRadius: '8px',
-              border: `1.5px solid ${card.accent}35`,
-              whiteSpace: 'nowrap',
-              letterSpacing: '-0.2px',
-            }}
-          >
-            {actionLabel}
-          </span>
-        )}
+        {card.icon(card.accent, isWide ? 28 : 22)}
       </div>
 
       {/* Middle: Title & Subtitle */}
-      <div style={{ width: '100%', marginTop: '10px' }}>
+      <div style={{ flex: isMobile ? 1 : 'none', width: isMobile ? 'auto' : '100%', marginTop: isMobile ? 0 : '10px' }}>
         <div
           style={{
             fontSize: isWide ? '22px' : '16px',
             fontWeight: 800,
             color: '#1e3a5f',
-            marginBottom: '4px',
+            marginBottom: '2px',
             lineHeight: 1.2,
             letterSpacing: '-0.3px',
           }}
@@ -1012,21 +1065,39 @@ function ActionCard({
         </div>
       </div>
 
-      {/* Bottom row: Right Arrow */}
-      <div
-        style={{
-          alignSelf: 'flex-end',
-          fontSize: '20px',
-          fontWeight: 700,
-          color: card.accent,
-          opacity: isHovered ? 1 : 0.45,
-          transform: isHovered ? 'translateX(4px)' : 'none',
-          transition: 'all 0.18s ease',
-          lineHeight: 1,
-        }}
-        aria-hidden="true"
-      >
-        →
+      {/* Right: Tag and/or Arrow */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', alignSelf: isMobile ? 'center' : 'flex-end', flexShrink: 0 }}>
+        {actionLabel && (
+          <span
+            style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: card.accent,
+              backgroundColor: card.accentBg,
+              padding: '3px 8px',
+              borderRadius: '8px',
+              border: `1.5px solid ${card.accent}35`,
+              whiteSpace: 'nowrap',
+              letterSpacing: '-0.2px',
+            }}
+          >
+            {actionLabel}
+          </span>
+        )}
+        <div
+          style={{
+            fontSize: '20px',
+            fontWeight: 700,
+            color: card.accent,
+            opacity: isHovered ? 1 : 0.45,
+            transform: isHovered ? 'translateX(4px)' : 'none',
+            transition: 'all 0.18s ease',
+            lineHeight: 1,
+          }}
+          aria-hidden="true"
+        >
+          →
+        </div>
       </div>
     </button>
   );

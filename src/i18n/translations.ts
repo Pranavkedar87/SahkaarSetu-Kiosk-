@@ -116,6 +116,9 @@ export interface KioskStrings {
   assistantSuccess: string;
   assistantError: string;
   assistantYouSaid: string;
+  // ── Conversational Clarification ───────────────────────────────────────────
+  clarificationReady?: string;
+  clarificationTapToAnswer?: string;
 }
 
 const en: KioskStrings = {
@@ -220,6 +223,8 @@ const en: KioskStrings = {
   assistantSuccess: 'I\'m ready to help whenever you need.',
   assistantError: 'I could not understand that. Please try again.',
   assistantYouSaid: 'You said:',
+  clarificationReady: 'Ready for your answer',
+  clarificationTapToAnswer: 'Tap to answer',
 };
 
 const hi: KioskStrings = {
@@ -324,6 +329,8 @@ const hi: KioskStrings = {
   assistantSuccess: 'आपकी सेवा में सदैव तत्पर हूँ।',
   assistantError: 'मुझे समझ नहीं आया। कृपया दोबारा प्रयास करें।',
   assistantYouSaid: 'आपने कहा:',
+  clarificationReady: 'आपके उत्तर के लिए तैयार',
+  clarificationTapToAnswer: 'उत्तर देने के लिए टैप करें',
 };
 
 const mr: KioskStrings = {
@@ -428,6 +435,8 @@ const mr: KioskStrings = {
   assistantSuccess: 'तुमच्या सेवेसाठी मी सदैव तयार आहे.',
   assistantError: 'मला समजले नाही. कृपया पुन्हा प्रयत्न करा.',
   assistantYouSaid: 'तुम्ही म्हणालात:',
+  clarificationReady: 'तुमच्या उत्तरासाठी सज्ज',
+  clarificationTapToAnswer: 'उत्तर देण्यासाठी टॅप करा',
 };
 
 const gu: KioskStrings = {

@@ -11,6 +11,7 @@
  *   - synthesizeSpeech (/api/voice/synthesize TTS)
  *   - useAudioPlayer (audio playback + fallback speech synthesis)
  *   - useLipSync (real-time Web Audio amplitude analysis)
+ *   - Interactive clarification conversation (conversational follow-up & auto-listen)
  *
  * Fully preserves K4 capabilities with zero duplicated voice logic.
  */
@@ -20,6 +21,11 @@ import { useVoiceRecorder } from './useVoiceRecorder';
 import { useAudioPlayer } from './useAudioPlayer';
 import { useLipSync } from './useLipSync';
 import { transcribeAudio, sendQuery, synthesizeSpeech } from '../services/api';
+import {
+  detectClarification,
+  buildClarificationContextQuery,
+  type ClarificationSessionContext,
+} from '../services/clarificationDetector';
 import type { KioskStrings } from '../i18n';
 import type { LanguageCode, QueryResponse, VoiceFailureLayer } from '../types';
 import type { AssistantState } from '../components/kiosk/SahkaarSetuAssistant';
@@ -39,6 +45,9 @@ export interface UseVoiceInteractionReturn {
   errorMessage: string | null;
   failureLayer: VoiceFailureLayer | null;
   isPlaying: boolean;
+  clarificationContext: ClarificationSessionContext | null;
+  awaitingClarificationGesture: boolean;
+  startListeningForClarification: () => Promise<boolean>;
   startListening: () => Promise<boolean>;
   stopListening: () => Promise<void>;
   stopAudio: () => void;
@@ -46,16 +55,18 @@ export interface UseVoiceInteractionReturn {
   reset: () => void;
 }
 
-// Strip markdown characters for clean, accessible display
+// Strip markdown characters and emojis for clean, accessible spoken audio
 function stripMarkdown(text: string): string {
   if (!text) return '';
   return text
     .replace(/https?:\/\/\S+/g, '')
     .replace(/#+\s*/g, '')
-    .replace(/[*_`]/g, '')
+    .replace(/[*_`~>|]/g, '')
     .replace(/^\s*[-*+]\s+/gm, '')
     .replace(/^\s*\d+\.\s+/gm, '')
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
@@ -72,6 +83,12 @@ export function useVoiceInteraction({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [failureLayer, setFailureLayer] = useState<VoiceFailureLayer | null>(null);
 
+  // Conversational clarification states
+  const [clarificationContext, setClarificationContext] = useState<ClarificationSessionContext | null>(null);
+  const [awaitingClarificationGesture, setAwaitingClarificationGesture] = useState<boolean>(false);
+  const pendingClarificationRef = useRef<ClarificationSessionContext | null>(null);
+  const autoListenTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const isSubmittingRef = useRef(false);
   const sessionIdRef = useRef<string>(
     `kiosk-voice-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
@@ -83,17 +100,17 @@ export function useVoiceInteraction({
     audioElement: audioPlayer.activeAudioElement,
   });
 
-  // Stop audio and reset if language changes
+  // Stop audio and reset clarification if language changes
   useEffect(() => {
+    if (autoListenTimerRef.current) {
+      clearTimeout(autoListenTimerRef.current);
+      autoListenTimerRef.current = null;
+    }
+    pendingClarificationRef.current = null;
+    setClarificationContext(null);
+    setAwaitingClarificationGesture(false);
     audioPlayer.stop();
   }, [language]);
-
-  // Sync state when audio finishes
-  useEffect(() => {
-    if (state === 'speaking' && !audioPlayer.isPlaying) {
-      setState('success');
-    }
-  }, [state, audioPlayer.isPlaying]);
 
   // Pause inactivity timeout when voice interaction is active
   useEffect(() => {
@@ -171,11 +188,27 @@ export function useVoiceInteraction({
 
       setUserTranscript(recognizedText);
 
+      // Determine query payload: if answering clarification, compile contextual question
+      let messageToSend = recognizedText;
+      let isFollowUpClarification = false;
+
+      if (pendingClarificationRef.current) {
+        messageToSend = buildClarificationContextQuery(
+          pendingClarificationRef.current.originalQuestion,
+          recognizedText,
+          pendingClarificationRef.current.type
+        );
+        isFollowUpClarification = true;
+        pendingClarificationRef.current = null;
+        setClarificationContext(null);
+        setAwaitingClarificationGesture(false);
+      }
+
       // ── Step 2: Central governed RAG Query ─────────────────────────────────
       let queryRes: QueryResponse;
       try {
         queryRes = await sendQuery({
-          message: recognizedText,
+          message: messageToSend,
           language,
           session_id: sessionIdRef.current,
           response_mode: 'voice',
@@ -211,6 +244,18 @@ export function useVoiceInteraction({
         onMessageAdded(recognizedText, rawDisplay);
       }
 
+      // Check if this response asks a clarification question (only if not already completing a clarification)
+      const clarificationMatch = detectClarification(rawDisplay || rawSpoken, queryRes.intent);
+      if (clarificationMatch && clarificationMatch.isClarification && !isFollowUpClarification) {
+        const sessionCtx: ClarificationSessionContext = {
+          type: clarificationMatch.type,
+          originalQuestion: recognizedText,
+          clarificationPrompt: rawDisplay || rawSpoken,
+        };
+        pendingClarificationRef.current = sessionCtx;
+        setClarificationContext(sessionCtx);
+      }
+
       // ── Step 3: TTS Speech Synthesis & Playback ────────────────────────────
       setState('speaking');
       try {
@@ -243,6 +288,30 @@ export function useVoiceInteraction({
     onAudioCaptured: handleAudioCaptured,
   });
 
+  // Sync state when audio finishes: auto-listen if awaiting clarification
+  useEffect(() => {
+    if (state === 'speaking' && !audioPlayer.isPlaying) {
+      if (pendingClarificationRef.current) {
+        if (autoListenTimerRef.current) clearTimeout(autoListenTimerRef.current);
+        autoListenTimerRef.current = setTimeout(async () => {
+          try {
+            setState('listening');
+            const started = await voiceRecorder.startRecording();
+            if (started) {
+              setAwaitingClarificationGesture(false);
+            } else {
+              setAwaitingClarificationGesture(true);
+            }
+          } catch {
+            setAwaitingClarificationGesture(true);
+          }
+        }, 400);
+      } else {
+        setState('success');
+      }
+    }
+  }, [state, audioPlayer.isPlaying, voiceRecorder]);
+
   // Sync recorder errors
   useEffect(() => {
     if (voiceRecorder.status === 'error') {
@@ -271,6 +340,10 @@ export function useVoiceInteraction({
   }, [voiceRecorder.status, voiceRecorder.errorCode, voiceRecorder.failureLayer, strings]);
 
   const startListening = useCallback(async () => {
+    if (autoListenTimerRef.current) {
+      clearTimeout(autoListenTimerRef.current);
+      autoListenTimerRef.current = null;
+    }
     audioPlayer.stop();
     setErrorMessage(null);
     setFailureLayer(null);
@@ -288,7 +361,12 @@ export function useVoiceInteraction({
 
   const stopAudio = useCallback(() => {
     audioPlayer.stop();
-    setState('success');
+    if (pendingClarificationRef.current) {
+      setState('listening');
+      setAwaitingClarificationGesture(true);
+    } else {
+      setState('success');
+    }
   }, [audioPlayer]);
 
   const replayAudio = useCallback(async () => {
@@ -296,7 +374,32 @@ export function useVoiceInteraction({
     await audioPlayer.playAgain();
   }, [audioPlayer]);
 
+  // Explicit user gesture to answer clarification question if auto-listen was blocked
+  const startListeningForClarification = useCallback(async () => {
+    if (autoListenTimerRef.current) {
+      clearTimeout(autoListenTimerRef.current);
+      autoListenTimerRef.current = null;
+    }
+    setAwaitingClarificationGesture(false);
+    audioPlayer.stop();
+    setErrorMessage(null);
+    setFailureLayer(null);
+    const started = await voiceRecorder.startRecording();
+    if (started) {
+      setState('listening');
+      return true;
+    }
+    return false;
+  }, [audioPlayer, voiceRecorder]);
+
   const reset = useCallback(() => {
+    if (autoListenTimerRef.current) {
+      clearTimeout(autoListenTimerRef.current);
+      autoListenTimerRef.current = null;
+    }
+    pendingClarificationRef.current = null;
+    setClarificationContext(null);
+    setAwaitingClarificationGesture(false);
     voiceRecorder.cancelRecording();
     audioPlayer.stop();
     setState('idle');
@@ -316,6 +419,9 @@ export function useVoiceInteraction({
     errorMessage,
     failureLayer,
     isPlaying: audioPlayer.isPlaying,
+    clarificationContext,
+    awaitingClarificationGesture,
+    startListeningForClarification,
     startListening,
     stopListening,
     stopAudio,
